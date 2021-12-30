@@ -1,9 +1,9 @@
-import { createAlchemyWeb3 } from '@alch/alchemy-web3';
-require('dotenv').config();
+import { createAlchemyWeb3 } from "@alch/alchemy-web3";
+
+require("dotenv").config();
 
 const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
 const web3 = createAlchemyWeb3(alchemyKey);
-
 
 // const contractABI = require('../contracts/contract-abi.json')
 // const contractAddress = "0xAA";
@@ -18,7 +18,7 @@ export const callContract = async () => {
     const transactionParameters = {
         to: contractAddress, // Required except during contract publications.
         from: window.ethereum.selectedAddress, // must match user's active address.
-        'data': window.contract.methods.mintNFT(window.ethereum.selectedAddress).encodeABI() //make call to NFT smart contract 
+        'data': window.contract.methods.mintNFT(window.ethereum.selectedAddress).encodeABI() //make call to NFT smart contract
     };
 
     //sign transaction via Metamask

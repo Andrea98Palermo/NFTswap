@@ -1,21 +1,45 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connectWallet, getCurrentWalletConnected } from "../utils/wallet";
 // import { callContract } from "../utils/blockchain";
 
-
-const Main = (props) => {
-
-  //State variables
+function Main() {
+  // State variables
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
 
+  function addWalletListener() {
+    if (window.ethereum) {
+      window.ethereum.on("accountsChanged", (accounts) => {
+        if (accounts.length > 0) {
+          setWallet(accounts[0]);
+          setStatus(`👋 Hi${accounts[0]}`);
+        } else {
+          setWallet("");
+          setStatus("🦊 Connect to Metamask using the top right button.");
+        }
+      });
+    } else {
+      setStatus(
+        <p>
+          {" "}
+          🦊
+          {" "}
+          <a target="_blank" rel="noreferrer" href="https://metamask.io/download.html">
+            You must install Metamask, a virtual Ethereum wallet, in your
+            browser.
+          </a>
+        </p>,
+      );
+    }
+  }
+
   useEffect(() => {
     (async () => {
-      const { address, status } = await getCurrentWalletConnected();
-      setWallet(address)
-      setStatus(status);
+      const { address, state } = await getCurrentWalletConnected();
+      setWallet(address);
+      setStatus(state);
       addWalletListener();
-    })()
+    })();
   }, []);
 
   const connectWalletPressed = async () => {
@@ -30,57 +54,29 @@ const Main = (props) => {
     alert("Coming soon!");
   };
 
-
-  function addWalletListener() {
-    if (window.ethereum) {
-      window.ethereum.on("accountsChanged", (accounts) => {
-        if (accounts.length > 0) {
-          setWallet(accounts[0]);
-          setStatus("👋 Hi" + accounts[0]);
-        } else {
-          setWallet("");
-          setStatus("🦊 Connect to Metamask using the top right button.");
-        }
-      });
-    } else {
-      setStatus(
-        <p>
-          {" "}
-          🦊{" "}
-          <a target="_blank" rel="noreferrer" href={`https://metamask.io/download.html`}>
-            You must install Metamask, a virtual Ethereum wallet, in your
-            browser.
-          </a>
-        </p>
-      );
-    }
-  }
-
   return (
     <div className="Main">
-      <button id="walletButton" onClick={connectWalletPressed}>
+      <button id="walletButton" onClick={connectWalletPressed} type="button">
         {walletAddress.length > 0 ? (
-          "Connected: " +
-          String(walletAddress).substring(0, 6) +
-          "..." +
-          String(walletAddress).substring(38)
+          `Connected: ${String(walletAddress).substring(0, 6)
+          }...${String(walletAddress).substring(38)}`
         ) : (
           <span>Connect Wallet</span>
         )}
       </button>
 
-      <br></br>
+      <br />
       <h1 id="title">🎨 NFT Swap</h1>
       <div>
         <p id="status">{status}</p>
       </div>
       {walletAddress.length > 0 ? (
-        <button id="callButton" onClick={onButtonPressed}>
+        <button id="callButton" onClick={onButtonPressed} type="button">
           Call Contract
         </button>
-      ) : <p></p>}
+      ) : <p />}
     </div>
   );
-};
+}
 
 export default Main;

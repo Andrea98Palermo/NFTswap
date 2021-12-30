@@ -13,8 +13,11 @@ cd frontend
 yarn install
 yarn start 
 ```
+You can now visit `http://localhost:3000/`
 ### Run using Docker
 ```
+cd frontend
 docker build -t blockchain-frontend .
 docker run -p 8000:80 blockchain-frontend:latest
 ```
+You can now visit `http://localhost:8000/`
