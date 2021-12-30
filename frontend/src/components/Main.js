@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { connectWallet, getCurrentWalletConnected } from "../utils/interact.js";
-
+import { connectWallet, getCurrentWalletConnected } from "../utils/wallet";
+// import { callContract } from "../utils/blockchain";
 
 
 const Main = (props) => {
@@ -22,6 +22,12 @@ const Main = (props) => {
     const walletResponse = await connectWallet();
     setStatus(walletResponse.status);
     setWallet(walletResponse.address);
+  };
+
+  const onButtonPressed = async () => {
+    // const { status } = await callContract();
+    //   setStatus(status);
+    alert("Coming soon!");
   };
 
 
@@ -68,6 +74,11 @@ const Main = (props) => {
       <div>
         <p id="status">{status}</p>
       </div>
+      {walletAddress.length > 0 ? (
+        <button id="callButton" onClick={onButtonPressed}>
+          Call Contract
+        </button>
+      ) : <p></p>}
     </div>
   );
 };
