@@ -7,14 +7,11 @@ function Main() {
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
   const [message, setMessage] = useState("No message");
+  const [title] = useState("🎨 NFT Swap");
 
   async function addWalletListener() {
     const { ethereum } = window;
     if (ethereum) {
-      const accounts = await ethereum.request({ method: 'eth_accounts' });
-      if (accounts.length === 0) {
-        setStatus("🦊 Connect to Metamask using the top right button.");
-      }
       window.ethereum.on("accountsChanged", (accounts) => {
         if (accounts.length > 0) {
           setWallet(accounts[0]);
@@ -41,9 +38,9 @@ function Main() {
 
   useEffect(() => {
     (async () => {
-      const { address, state } = await getCurrentWalletConnected();
+      const { address, status } = await getCurrentWalletConnected();
       setWallet(address);
-      setStatus(state);
+      setStatus(status);
       addWalletListener();
     })();
   }, []);
@@ -72,7 +69,7 @@ function Main() {
       </button>
 
       <br />
-      <h1 id="title">🎨 NFT Swap</h1>
+      <h1 id="title">{title}</h1>
       <div>
         <p id="status">{status}</p>
       </div>
