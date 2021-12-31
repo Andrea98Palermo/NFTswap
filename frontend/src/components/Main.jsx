@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { connectWallet, getCurrentWalletConnected } from "../utils/wallet";
-// import { callContract } from "../utils/blockchain";
+import { callContract } from "../utils/blockchain";
 
 function Main() {
   // State variables
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
+  const [message, setMessage] = useState("No message");
 
-  function addWalletListener() {
-    if (window.ethereum) {
+  async function addWalletListener() {
+    const { ethereum } = window;
+    if (ethereum) {
+      const accounts = await ethereum.request({ method: 'eth_accounts' });
+      if (accounts.length === 0) {
+        setStatus("🦊 Connect to Metamask using the top right button.");
+      }
       window.ethereum.on("accountsChanged", (accounts) => {
         if (accounts.length > 0) {
           setWallet(accounts[0]);
@@ -24,7 +30,7 @@ function Main() {
           {" "}
           🦊
           {" "}
-          <a target="_blank" rel="noreferrer" href="https://metamask.io/download.html">
+          <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/download.html">
             You must install Metamask, a virtual Ethereum wallet, in your
             browser.
           </a>
@@ -42,6 +48,7 @@ function Main() {
     })();
   }, []);
 
+
   const connectWalletPressed = async () => {
     const walletResponse = await connectWallet();
     setStatus(walletResponse.status);
@@ -49,9 +56,8 @@ function Main() {
   };
 
   const onButtonPressed = async () => {
-    // const { status } = await callContract();
-    //   setStatus(status);
-    alert("Coming soon!");
+    const message = await callContract();
+    setMessage(message);
   };
 
   return (
@@ -71,9 +77,14 @@ function Main() {
         <p id="status">{status}</p>
       </div>
       {walletAddress.length > 0 ? (
-        <button id="callButton" onClick={onButtonPressed} type="button">
-          Call Contract
-        </button>
+        <>
+          <button id="callButton" onClick={onButtonPressed} type="button">
+            Call Contract
+          </button>
+          <div>
+            <p id="status">Message: {message}</p>
+          </div>
+        </>
       ) : <p />}
     </div>
   );
