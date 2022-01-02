@@ -1,0 +1,12 @@
+{
+  "minify": true,
+  "jsc": {
+    "minify": {
+      "compress": true,
+      "mangle": true
+    }
+  },
+  "env": {
+    "coreJs": 3
+  }
+}
