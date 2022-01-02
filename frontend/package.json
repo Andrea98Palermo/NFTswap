@@ -12,7 +12,8 @@
     "start": "craco start",
     "test": "craco test",
     "lint": "eslint src/**/*.js src/**/*.jsx",
-    "lint:init": "eslint --init"
+    "lint:init": "eslint --init",
+    "lint:fix": "yarn lint --fix"
   },
   "browserslist": {
     "production": [
