@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { connectWallet, getCurrentWalletConnected } from "../utils/wallet"
 import { callContract } from "../utils/blockchain"
-import { Navbar } from "./Navbar"
+import Navbar from "./Navbar"
 
 function Main () {
   // State variables
