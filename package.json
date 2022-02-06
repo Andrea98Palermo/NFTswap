@@ -21,6 +21,6 @@
   },
   "homepage": "https://github.com/Andrea98Palermo/NFTswap#readme",
   "dependencies": {
-    "@openzeppelin/contracts": "^4.4.1"
+    "@openzeppelin/contracts": "^4.4.2"
   }
 }

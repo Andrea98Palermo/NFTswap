@@ -2,14 +2,14 @@ import { useEffect, useState } from "react"
 import { connectWallet, getCurrentWalletConnected } from "../utils/wallet"
 import { callContract } from "../utils/blockchain"
 
-function Main () {
+function Main() {
   // State variables
   const [walletAddress, setWallet] = useState("")
   const [status, setStatus] = useState("")
   const [message, setMessage] = useState("No message")
   const [title] = useState("🎨 NFT Swap")
 
-  async function addWalletListener () {
+  async function addWalletListener() {
     const { ethereum } = window
     if (ethereum) {
       window.ethereum.on("accountsChanged", (accounts) => {
@@ -78,7 +78,7 @@ function Main () {
         ? (
           <>
             <button id="callButton" onClick={onButtonPressed} type="button">
-            Call Contract
+              Call Contract
             </button>
             <div>
               <p id="status">Message: {message}</p>
