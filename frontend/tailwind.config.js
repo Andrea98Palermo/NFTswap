@@ -9,7 +9,7 @@ module.exports = {
     },
     fontFamily: {
       'source-code': ['"Source Code Pro"', 'monospace']
-    }
+    },
   },
   plugins: [],
 }

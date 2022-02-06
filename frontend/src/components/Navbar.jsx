@@ -1,13 +1,16 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Disclosure } from "@headlessui/react"
 import { CreditCardIcon, MenuIcon, XIcon } from "@heroicons/react/outline"
-import { Link } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 
 const navigation = [
-  { name: "Marketplace", href: "/", current: true },
-  { name: "Upload", href: "/upload", current: false },
-  { name: "Profile", href: "/profile", current: false },
+  { name: "Marketplace", href: "/" },
+  { name: "Upload", href: "/upload" },
+  { name: "Profile", href: "/profile" },
 ]
+let activeStyle = {
+  textDecoration: "underline"
+}
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -15,7 +18,7 @@ function classNames(...classes) {
 
 export default function Navbar() {
   return (
-    <Disclosure as="nav" className="bg-green border-b-2 border-b-black shadow-xl">
+    < Disclosure as="nav" className="bg-green border-b-2 border-b-black shadow-xl" >
       {({ open }) => (
         <>
           <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
@@ -33,24 +36,23 @@ export default function Navbar() {
               </div>
               <div className="basis-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex-shrink-0 flex items-center">
-                  <p className="font-source-code text-3xl font-medium">NFTswap</p>
+                  <span className="font-source-code text-3xl font-medium">NFTswap</span>
                 </div>
               </div>
               <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-center">
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
-                      <Link
+                      <NavLink
                         key={item.name}
                         to={item.href}
-                        className={classNames(
-                          item.current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                          "px-3 py-2 rounded-md font-source-code text-lg font-medium"
-                        )}
-                        aria-current={item.current ? "page" : undefined}
+                        className="font-source-code"
+                        style={({ isActive }) =>
+                          isActive ? activeStyle : undefined
+                        }
                       >
                         {item.name}
-                      </Link>
+                      </NavLink>
                     ))}
                   </div>
                 </div>
@@ -70,14 +72,15 @@ export default function Navbar() {
           <Disclosure.Panel className="sm:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigation.map((item) => (
-                <Disclosure.Button
+                < Disclosure.Button
                   key={item.name}
                   as="a"
                   href={item.href}
-                  className={classNames(
-                    item.current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                    "block px-3 py-2 rounded-md text-base font-medium"
-                  )}
+                  className={
+                    classNames(
+                      "text-gray-300 hover:bg-gray-700 hover:text-white",
+                      "block px-3 py-2 rounded-md text-base font-medium"
+                    )}
                   aria-current={item.current ? "page" : undefined}
                 >
                   {item.name}
@@ -86,7 +89,8 @@ export default function Navbar() {
             </div>
           </Disclosure.Panel>
         </>
-      )}
-    </Disclosure>
+      )
+      }
+    </Disclosure >
   )
 }
