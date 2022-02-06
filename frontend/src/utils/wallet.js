@@ -5,7 +5,7 @@ export const connectWallet = async () => {
         method: "eth_requestAccounts"
       })
       const obj = {
-        status: `👋 Hi ${addressArray[0]}`,
+        status: "online",
         address: addressArray[0]
       }
       return obj
@@ -18,19 +18,7 @@ export const connectWallet = async () => {
   } else {
     return {
       address: "",
-      status: (
-        <span>
-          <p>
-            {" "}
-            🦊
-            {" "}
-            <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/download.html">
-              You must install Metamask, a virtual Ethereum wallet, in your
-              browser.
-            </a>
-          </p>
-        </span>
-      )
+      status: ("offline")
     }
   }
 }
@@ -44,12 +32,12 @@ export const getCurrentWalletConnected = async () => {
       if (addressArray.length > 0) {
         return {
           address: addressArray[0],
-          status: `👋 Hi ${addressArray[0]}`
+          status: "online"
         }
       }
       return {
         address: "",
-        status: "🦊 Connect to Metamask using the top right button."
+        status: "offline"
       }
     } catch (err) {
       return {
@@ -60,19 +48,7 @@ export const getCurrentWalletConnected = async () => {
   } else {
     return {
       address: "",
-      status: (
-        <span>
-          <p>
-            {" "}
-            🦊
-            {" "}
-            <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/download.html">
-              You must install Metamask, a virtual Ethereum wallet, in your
-              browser.
-            </a>
-          </p>
-        </span>
-      )
+      status: ("offline")
     }
   }
 }

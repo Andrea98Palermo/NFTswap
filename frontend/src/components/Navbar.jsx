@@ -1,7 +1,9 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Disclosure } from "@headlessui/react"
-import { CreditCardIcon, MenuIcon, XIcon } from "@heroicons/react/outline"
+import { CreditCardIcon, StatusOfflineIcon, MenuIcon, XIcon } from "@heroicons/react/outline"
 import { NavLink } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { connectWallet, getCurrentWalletConnected } from "../utils/wallet"
 
 const navigation = [
   { name: "Marketplace", href: "/" },
@@ -17,6 +19,64 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
+  const [walletAddress, setWallet] = useState("")
+  const [status, setStatus] = useState("")
+
+  async function addWalletListener() {
+    const { ethereum } = window
+    if (ethereum) {
+      window.ethereum.on("accountsChanged", (accounts) => {
+        if (accounts.length > 0) {
+          setWallet(accounts[0])
+          setStatus(
+            <span>
+              <CreditCardIcon className="h-6 w-6" aria-hidden="true" />
+            </span>
+          )
+        } else {
+          setWallet("")
+          setStatus(<StatusOfflineIcon className="h-6 w-6" aria-hidden="true" />)
+        }
+      })
+    } else {
+      setStatus(
+        <StatusOfflineIcon className="h-6 w-6" aria-hidden="true" />
+      )
+    }
+  }
+
+  useEffect(() => {
+    (async () => {
+      addWalletListener()
+      const { address, status } = await getCurrentWalletConnected()
+      setWallet(address)
+      status == "online"
+        ? (
+          setStatus(
+            <span>
+              <CreditCardIcon className="h-6 w-6" aria-hidden="true" />
+            </span>
+          )
+        )
+        : (
+          setStatus(<StatusOfflineIcon className="h-6 w-6" aria-hidden="true" />)
+        )
+    })()
+  }, [])
+
+  const connectWalletPressed = async () => {
+    const walletResponse = await connectWallet()
+    setWallet(walletResponse.address)
+    /* Must refresh the page to update the icon... */
+    status == "online" ?
+      setStatus(
+        <span>
+          <CreditCardIcon className="h-6 w-6" aria-hidden="true" />
+        </span>
+      ) :
+      setStatus(<StatusOfflineIcon className="h-6 w-6" aria-hidden="true" />)
+  }
+
   return (
     < Disclosure as="nav" className="bg-green border-b-2 border-b-black shadow-xl" >
       {({ open }) => (
@@ -34,7 +94,7 @@ export default function Navbar() {
                   )}
                 </Disclosure.Button>
               </div>
-              <div className="basis-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+              <div className="basis-1 flex items-center justify-start sm:items-stretch sm:justify-start">
                 <div className="flex-shrink-0 flex items-center">
                   <span className="font-source-code text-3xl font-medium">NFTswap</span>
                 </div>
@@ -59,12 +119,14 @@ export default function Navbar() {
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <button
+                  onClick={connectWalletPressed}
                   type="button"
                   className="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
                 >
                   <span className="sr-only">Connect wallet</span>
-                  <CreditCardIcon className="h-6 w-6" aria-hidden="true" />
+                  <span>{status}</span>
                 </button>
+                <span>{`${String(walletAddress).substring(0, 3)}...${String(walletAddress).substring(38)}`}</span>
               </div>
             </div>
           </div>
