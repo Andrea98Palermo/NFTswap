@@ -11,7 +11,7 @@ How to run the frontend:
 
 ### Compile
 
-On terminal, install all the dependencies:
+On a terminal, install all the dependencies:
 
 ```bash
 cd contract
@@ -21,7 +21,7 @@ yarn compile
 
 ### Deploy on a local node
 
-On terminal A, launch a local node
+On a terminal, launch a local node
 
 ```bash
 cd contract
