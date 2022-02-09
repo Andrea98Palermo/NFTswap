@@ -357,4 +357,8 @@ contract NFTSwap {
         );
         bidRef = proposals[proposerAddress][proposalId].bidsRef[index];
     }
+
+    function helloWorld() public pure returns (string memory) {
+        return "Hello World";
+    }
 }
