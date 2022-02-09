@@ -21,13 +21,12 @@ module.exports = {
             },
         },
     },
-    defaultNetwork: "mumbai",
+    defaultNetwork: "localhost",
     networks: {
-        hardhat: {},
-        mumbai: {
-            url: API_URL,
-            accounts: [`0x${PRIVATE_KEY}`]
-        }
+        // mumbai: {
+        //    url: API_URL,
+        //    accounts: [`0x${PRIVATE_KEY}`]
+        //}
     },
     mocha: {
         timeout: 30000
