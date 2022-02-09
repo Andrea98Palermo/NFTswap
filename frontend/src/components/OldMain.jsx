@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { connectWallet, getCurrentWalletConnected } from "../utils/wallet"
-import { callContract } from "../utils/blockchain"
+import { callHelloWorld } from "../utils/blockchain"
 
 function OldMain() {
   // State variables
@@ -52,7 +52,7 @@ function OldMain() {
   }
 
   const onButtonPressed = async () => {
-    const message = await callContract()
+    const message = await callHelloWorld()
     setMessage(message)
   }
 

@@ -4,7 +4,7 @@ import {
   Routes,
   Route
 } from "react-router-dom"
-import Main from "./components/Main"
+import OldMain from "./components/OldMain"
 import Upload from "./routes/upload"
 import Profile from "./routes/profile"
 import "./index.css"
@@ -15,7 +15,7 @@ render(
   <BrowserRouter>
     <Navbar />
     <Routes>
-      <Route path="/" element={<Main />} className="container mx-auto"/>
+      <Route path="/" element={<OldMain />} className="container mx-auto"/>
       <Route path="upload" element={<Upload />} />
       <Route path="profile" element={<Profile />} />
     </Routes>

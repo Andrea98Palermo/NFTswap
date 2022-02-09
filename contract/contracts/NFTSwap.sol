@@ -49,6 +49,10 @@ contract NFTSwap {
     */
     constructor() {}
 
+    function helloWorld() public pure returns (string memory) {
+        return "Hello, World!";
+    }
+
     //quando un utente vuole proporre uno scambio il front end deve chiamare prima l'approve dell'nft verso il contratto e poi questa funzione
     function proposeSwap(IERC721 nftAddress, uint256 tokenId) external {
         //require(nftAddress.getApproved(tokenId) == address(this), "You have to approve the token you want to swap to this contract");
@@ -356,9 +360,5 @@ contract NFTSwap {
             "Specified bid does not exist"
         );
         bidRef = proposals[proposerAddress][proposalId].bidsRef[index];
-    }
-
-    function helloWorld() public pure returns (string memory) {
-        return "Hello World";
     }
 }
