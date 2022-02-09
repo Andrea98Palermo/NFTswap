@@ -1,7 +1,10 @@
 import { ethers } from "ethers"
 import contract from "../contracts/contract-abi.json"
+require("dotenv").config()
 
-const contractAddress = "0x283a4E2CAa10C1a45095777F263C2BC8b252Bfda"
+const { CONTRACT_ADDRESS } = process.env
+
+const contractAddress = CONTRACT_ADDRESS
 const contractABI = contract.abi
 
 export const callContract = async () => {
