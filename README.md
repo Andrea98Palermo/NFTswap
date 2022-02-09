@@ -21,7 +21,9 @@ yarn compile
 
 ### Deploy on a local node
 
-On a terminal, launch a local node
+#### Launch a local node
+
+On a terminal
 
 ```bash
 cd contract
@@ -29,6 +31,8 @@ yarn exec hardhat node
 ```
 
 This command launch an HTTP and WebSocket JSON-RPC server @ `http://127.0.0.1:8545/`, you can use it as Web3 Provider on [Remix](https://remix.ethereum.org/).
+
+#### Deploy it
 
 On another terminal, deploy it
 
@@ -39,9 +43,11 @@ yarn deploy
 
 ### Deploy on a Testnet
 
-#### Prerequisite
+#### Prerequisites
 
-* An [Alchemy](https://www.alchemy.com/) account with a valid project.
+* An [Alchemy](https://www.alchemy.com/) account with a valid project on a Testnet (I suggest Mumbai Polygon testnet).
+* An account with some funds on the chain selected before, if you choose Mumbai you can obtain them on the [official faucet](https://faucet.polygon.technology/)
+* The choosen testnet available as Network in MetaMask, you can add Mumbai Testnet from [here](https://chainlist.org/). (You can find a longer guide [here](https://blog.pods.finance/guide-connecting-mumbai-testnet-to-your-metamask-87978071aca8))
 
 ---
 
@@ -73,3 +79,12 @@ docker run -p 8000:80 blockchain-frontend:latest
 ```
 
 You can now visit `http://localhost:8000/`
+
+## The easiest way to test Frontend + "Backend"
+
+1. Launch a local node, as described [here](#launch-a-local-node)
+2. Deploy the contract on a local node, as described [before](#deploy-it)
+3. Connect MetaMask to `http://127.0.0.1:8545/`
+4. Import an Account on Metamask from the private key printed on terminal in step `1`, as described [here](https://metamask.zendesk.com/hc/en-us/articles/360015489331-How-to-import-an-Account)
+5. Open `contract\artifacts\contracts\NFTSwap.sol\NFTSwap.json` and paste the content into `frontend\src\contracts\contract-abi.json`.
+6. Edit `frontend\src\utils\blockchain.js` with `CONTRACT_ADDRESS` obtained in point `2`
