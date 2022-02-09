@@ -153,9 +153,6 @@ blockchain/geth/**
 blockchain/keystore/**
 blockchain/history
 
-#truffle
-yarn.lock
-package-lock.json
 
 ### VisualStudioCode ###
 .vscode/*
@@ -171,5 +168,9 @@ package-lock.json
 
 # Support for Project snippet scope
 !.vscode/*.code-snippets
+
+contract/artifacts
+contract/cache
+contract/contracts/artifacts
 
 # End of https://www.toptal.com/developers/gitignore/api/react,solidity,soliditytruffle,visualstudiocode
