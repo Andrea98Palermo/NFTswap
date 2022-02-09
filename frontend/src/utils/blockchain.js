@@ -1,5 +1,5 @@
 import { ethers } from "ethers"
-import contract from "../contracts/contract-abi.json"
+import contract from "../../../contract/artifacts/contracts/NFTSwap.sol/NFTSwap.json"
 require("dotenv").config()
 
 const { CONTRACT_ADDRESS } = process.env
@@ -13,7 +13,7 @@ export const callContract = async () => {
     const provider = new ethers.providers.Web3Provider(ethereum)
     const signer = provider.getSigner()
     const myContract = new ethers.Contract(contractAddress, contractABI, signer)
-    const message = await myContract.message()
+    const message = await myContract.helloWorld()
     return message
   } catch (error) {
     return 0
