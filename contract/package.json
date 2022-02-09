@@ -20,5 +20,10 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.4.2"
+  },
+  "scripts": {
+    "deploy": "hardhat run scripts/deploy.js --network localhost",
+    "compile": "hardhat compile",
+    "deploy:testnet": "hardhat run scripts/deploy.js --network mumbai"
   }
 }
