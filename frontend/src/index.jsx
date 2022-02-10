@@ -15,7 +15,7 @@ render(
   <BrowserRouter>
     <Navbar />
     <Routes>
-      <Route path="/" element={<OldMain />} className="container mx-auto"/>
+      <Route path="/" element={<OldMain />}/>
       <Route path="upload" element={<Upload />} />
       <Route path="profile" element={<Profile />} />
     </Routes>
