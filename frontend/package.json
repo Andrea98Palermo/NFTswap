@@ -6,6 +6,7 @@
     "@headlessui/react": "^1.4.3",
     "@heroicons/react": "^1.0.5",
     "ethers": "^5.5.4",
+    "prop-types": "^15.8.1",
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "^6.2.1"
