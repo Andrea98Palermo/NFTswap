@@ -2,7 +2,7 @@ import PropTypes from "prop-types"
 
 Card.propTypes = {
   title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
+  description: PropTypes.string,
   image: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
 }
