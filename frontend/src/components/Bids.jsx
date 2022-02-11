@@ -1,7 +1,7 @@
 export default function Bids() {
   //const [address, setAddress] = useState()
   return (
-    <div className="w-full mb-8 overflow-hidden rounded-lg shadow-lg">
+    <div className="w-full mb-8 overflow-hidden rounded-lg border border-black">
       <div className="w-full overflow-x-auto">
         <table className="w-full">
           <thead>
