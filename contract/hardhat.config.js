@@ -23,10 +23,10 @@ module.exports = {
     },
     defaultNetwork: "localhost",
     networks: {
-        // mumbai: {
-        //    url: API_URL,
-        //    accounts: [`0x${PRIVATE_KEY}`]
-        //}
+         mumbai: {
+            url: API_URL,
+            accounts: [`0x${PRIVATE_KEY}`]
+        }
     },
     mocha: {
         timeout: 30000
