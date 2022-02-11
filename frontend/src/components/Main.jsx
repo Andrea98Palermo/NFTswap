@@ -13,8 +13,10 @@ function Main() {
   const { account, active} = useWeb3React()
 
   useEffect(async () => {
-    const response = await client.get("assets?owner=" + account)
-    setNft(response.data)
+    if(active){
+      const response = await client.get("assets?owner=" + account)
+      setNft(response.data)
+    }
   }, [account])
 
   if (!active)  {
