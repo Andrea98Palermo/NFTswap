@@ -39,7 +39,7 @@ function Main() {
         {!nft && <div>Loading...</div>}
         {nft && !nft.assets.length && <div>No NFTs found</div>}
         {nft &&
-          nft.assets.length &&
+          nft.assets.length ?
           nft.assets.map((asset, index) => {
             return (
               <Card
@@ -50,7 +50,7 @@ function Main() {
                 link={asset.permalink}
               />
             )
-          })}
+          }) : null}
       </div>
     </div>
   )
