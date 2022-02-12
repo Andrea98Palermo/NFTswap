@@ -1,6 +1,14 @@
 const CracoSwcPlugin = require("craco-swc")
 
 module.exports = {
+  tyle: {
+    postcss: {
+      plugins: [
+        require("tailwindcss"),
+        require("autoprefixer"),
+      ],
+    },
+  },
   plugins: [
     {
       plugin: CracoSwcPlugin,
