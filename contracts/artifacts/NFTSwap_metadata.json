@@ -236,6 +236,24 @@
 			{
 				"inputs": [
 					{
+						"internalType": "contract IERC721",
+						"name": "nftAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "makeProposal",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
@@ -265,24 +283,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "contract IERC721",
-						"name": "nftAddress",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "tokenId",
-						"type": "uint256"
-					}
-				],
-				"name": "proposeSwap",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -371,10 +371,10 @@
 			]
 		},
 		"contracts/NFTSwap.sol": {
-			"keccak256": "0x3d0b2957b037178a17e09d3dc851ecf48fea8704a012c9fb8973da665903f7bd",
+			"keccak256": "0xfebe9fb6f0649bbda74480285806c83edea46894978082a2e577c749217761a4",
 			"urls": [
-				"bzz-raw://9024591f17b290ab35e01ca7d97dbb09d7bc5c3fc4d7b43b5ca0fae736eeec4e",
-				"dweb:/ipfs/QmczbYdTUEBbE3EwvkEhXGZxXbhyo4esScayeW7HgfyKS5"
+				"bzz-raw://f132993acdaac34488ac5ac1abd2cf99e57b56082778bb3789950bfacb0eca6a",
+				"dweb:/ipfs/QmXmM5nXECUnfkEGjCyNSUW8Vby2VpuWfpJvWUE7ssVgpY"
 			]
 		}
 	},
