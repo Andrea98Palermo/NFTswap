@@ -115,9 +115,17 @@ contract NFTSwap {
             deleteProposal(proposerAddress, proposalId);
             revert("You do not own the nft anymore");
         }
+        if(nftAddress1.getApproved(tokenId1) != address(this)) {
+            deleteProposal(proposerAddress, proposalId);
+            revert("You removed approval for the nft to this contract, please re-approve it");
+        }
         if(nftAddress2.ownerOf(tokenId2) != bidderAddress) {
             deleteBid(bidderAddress, bidId);
             revert("The bidder does not own the nft anymore");
+        }
+        if(nftAddress2.getApproved(tokenId2) != address(this)) {
+            deleteBid(bidderAddress, bidId);
+            revert("The bidder removed approval for the bidded nft to this contract. Impossible to complete the swap until the bidder re-approves the nft");
         }
 
         nftAddress1.safeTransferFrom(proposerAddress, bidderAddress, tokenId1);
@@ -142,12 +150,20 @@ contract NFTSwap {
             deleteProposal(proposerAddress, proposalId);
             revert("You do not own the nft anymore");
         }
+        if(nftAddress1.getApproved(tokenId1) != address(this)) {
+            deleteProposal(proposerAddress, proposalId);
+            revert("You removed approval for the nft to this contract, please re-approve it");
+        }
 
         address bidderAddress = bidIdentifier.bidderAddress;
         uint8 bidId = bidIdentifier.bidId;
         if(nftAddress2.ownerOf(tokenId2) != bidderAddress) {
             deleteBid(bidderAddress, bidId);
             revert("The bidder does not own the nft anymore");
+        }
+        if(nftAddress2.getApproved(tokenId2) != address(this)) {
+            deleteBid(bidderAddress, bidId);
+            revert("The bidder removed approval for the bidded nft to this contract. Impossible to complete the swap until the bidder re-approves the nft");
         }
 
         nftAddress1.safeTransferFrom(proposerAddress, bidIdentifier.bidderAddress, tokenId1);
@@ -161,9 +177,7 @@ contract NFTSwap {
         require( proposals[proposerAddress][proposalId].nftAddress != IERC721(address(0x0)), "Specified proposal does not exist" );
         require( bids[bidder][bidId].nftAddress != IERC721(address(0x0)), "Specified bid does not exist" );
 
-        delete proposals[bids[bidder][bidId].proposalRef.proposerAddress][bids[bidder][bidId].proposalRef.proposalId].bidsRef[bids[bidder][bidId].indexInProposal];      //gap unhandled
-        delete bids[bidder][bidId];
-        bidsGaps[bidder].push(bidId);
+        deleteBid(bidder, bidId);
     }
 
     function refuseBid(uint8 proposalId, uint256 bidIndex) external {
@@ -172,9 +186,7 @@ contract NFTSwap {
         require( proposals[proposerAddress][proposalId].bidsRef[bidIndex].bidderAddress != address(0x0), "Specified bid does not exist" );
     
         BidIdentifier memory bidIdentifier = proposals[proposerAddress][proposalId].bidsRef[bidIndex];
-        delete proposals[bids[bidIdentifier.bidderAddress][bidIdentifier.bidId].proposalRef.proposerAddress][bids[bidIdentifier.bidderAddress][bidIdentifier.bidId].proposalRef.proposalId].bidsRef[bids[bidIdentifier.bidderAddress][bidIdentifier.bidId].indexInProposal];      //gap unhandled
-        delete bids[bidIdentifier.bidderAddress][bidIdentifier.bidId];
-        bidsGaps[bidIdentifier.bidderAddress].push(bidIdentifier.bidId);
+        deleteBid(bidIdentifier.bidderAddress, bidIdentifier.bidId);
     }
 
     function deleteProposal(uint8 proposalId) external{
@@ -190,7 +202,7 @@ contract NFTSwap {
     }
 
     function deleteProposal(address proposer, uint8 proposalId) internal{
-        require( proposals[proposer][proposalId].nftAddress != IERC721(address(0x0)), "Specified proposal does not exist" );
+        //require( proposals[proposer][proposalId].nftAddress != IERC721(address(0x0)), "Specified proposal does not exist" );
         
         for(uint256 i = 0; i < proposals[proposer][proposalId].bidsRef.length; i++) {
             delete bids[proposals[proposer][proposalId].bidsRef[i].bidderAddress][proposals[proposer][proposalId].bidsRef[i].bidId];    //se c'è un buco nell'array bidsRef verrà cancellata proposals[0x0][0], valutare se conviene fare un check 
@@ -210,7 +222,7 @@ contract NFTSwap {
     }
 
     function deleteBid(address bidder, uint8 bidId) internal{
-        require( bids[bidder][bidId].nftAddress != IERC721(address(0x0)), "Specified bid does not exist" );
+        //require( bids[bidder][bidId].nftAddress != IERC721(address(0x0)), "Specified bid does not exist" );
         
         delete proposals[bids[bidder][bidId].proposalRef.proposerAddress][bids[bidder][bidId].proposalRef.proposalId].bidsRef[bids[bidder][bidId].indexInProposal];      //gap unhandled
         delete bids[bidder][bidId];

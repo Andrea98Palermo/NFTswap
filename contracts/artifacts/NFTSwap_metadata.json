@@ -371,10 +371,10 @@
 			]
 		},
 		"contracts/NFTSwap.sol": {
-			"keccak256": "0xfebe9fb6f0649bbda74480285806c83edea46894978082a2e577c749217761a4",
+			"keccak256": "0x3bfbc97398e5073f526c23ba9e45508c764add6bd3f3b09f7bc19c320c9ef8d9",
 			"urls": [
-				"bzz-raw://f132993acdaac34488ac5ac1abd2cf99e57b56082778bb3789950bfacb0eca6a",
-				"dweb:/ipfs/QmXmM5nXECUnfkEGjCyNSUW8Vby2VpuWfpJvWUE7ssVgpY"
+				"bzz-raw://b26b2e69964ef0913ead90927ee7858a71709bcd19ae6490eef5c38b84cad01f",
+				"dweb:/ipfs/Qmbg2HyYfr4wzKNhtNvYumoXhi1Vw13Ue2no7w6cf1z6b1"
 			]
 		}
 	},
