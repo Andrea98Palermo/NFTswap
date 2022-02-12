@@ -33,8 +33,8 @@ contract NFTSwap {
     mapping (address => mapping(uint8 => Bid)) public bids;
     mapping (address => uint8) private proposalsCount;
     mapping (address => uint8) private bidsCount;
-    uint8[] proposalsGaps;
-    uint8[] bidsGaps;
+    mapping(address => uint8[]) private proposalsGaps;
+    mapping(address => uint8[]) private bidsGaps;
     
     constructor() {}
     
@@ -45,12 +45,12 @@ contract NFTSwap {
 
         address proposer = msg.sender;
         require(nftAddress.ownerOf(tokenId) == proposer, "You do not own the specified nft");
-        require(proposalsGaps.length > 0 || proposalsCount[proposer] <= 255, "You have too many proposals, delete one before");
+        require( proposalsCount[proposer] <= 255 || proposalsGaps[proposer].length > 0, "You have too many proposals, delete one before");
 
         uint8 index;
-        if (proposalsGaps.length > 0) {
-            index = proposalsGaps[proposalsGaps.length - 1];
-            proposalsGaps.pop();
+        if (proposalsGaps[proposer].length > 0) {
+            index = proposalsGaps[proposer][proposalsGaps[proposer].length - 1];
+            proposalsGaps[proposer].pop();
         }
         else{
             index = proposalsCount[proposer];
@@ -71,7 +71,7 @@ contract NFTSwap {
         
         address bidder = msg.sender;
         require(bidNftAddress.ownerOf(bidNftTokenId) == bidder, "You do not own the specified nft");
-        require(bidsGaps.length > 0 || bidsCount[bidder] <= 255, "You have too many bids, delete one before");
+        require(bidsGaps[bidder].length > 0 || bidsCount[bidder] <= 255, "You have too many bids, delete one before");
 
         Bid memory bid;
         ProposalIdentifier memory proposalRef;
@@ -83,9 +83,9 @@ contract NFTSwap {
         bid.indexInProposal = proposals[proposerAddress][proposalId].bidsRef.length;
 
         uint8 index;
-        if (bidsGaps.length > 0) {
-            index = bidsGaps[bidsGaps.length - 1];
-            bidsGaps.pop();
+        if (bidsGaps[bidder].length > 0) {
+            index = bidsGaps[bidder][bidsGaps[bidder].length - 1];
+            bidsGaps[bidder].pop();
         }
         else{
             index = bidsCount[bidder];
@@ -163,7 +163,7 @@ contract NFTSwap {
 
         delete proposals[bids[bidder][bidId].proposalRef.proposerAddress][bids[bidder][bidId].proposalRef.proposalId].bidsRef[bids[bidder][bidId].indexInProposal];      //gap unhandled
         delete bids[bidder][bidId];
-        bidsGaps.push(bidId);
+        bidsGaps[bidder].push(bidId);
     }
 
     function refuseBid(uint8 proposalId, uint256 bidIndex) external {
@@ -174,7 +174,7 @@ contract NFTSwap {
         BidIdentifier memory bidIdentifier = proposals[proposerAddress][proposalId].bidsRef[bidIndex];
         delete proposals[bids[bidIdentifier.bidderAddress][bidIdentifier.bidId].proposalRef.proposerAddress][bids[bidIdentifier.bidderAddress][bidIdentifier.bidId].proposalRef.proposalId].bidsRef[bids[bidIdentifier.bidderAddress][bidIdentifier.bidId].indexInProposal];      //gap unhandled
         delete bids[bidIdentifier.bidderAddress][bidIdentifier.bidId];
-        bidsGaps.push(bidIdentifier.bidId);
+        bidsGaps[bidIdentifier.bidderAddress].push(bidIdentifier.bidId);
     }
 
     function deleteProposal(uint8 proposalId) external{
@@ -183,10 +183,10 @@ contract NFTSwap {
         
         for(uint256 i = 0; i < proposals[proposer][proposalId].bidsRef.length; i++) {
             delete bids[proposals[proposer][proposalId].bidsRef[i].bidderAddress][proposals[proposer][proposalId].bidsRef[i].bidId];    //se c'è un buco nell'array bidsRef verrà cancellata proposals[0x0][0], valutare se conviene fare un check 
-            bidsGaps.push(proposals[proposer][proposalId].bidsRef[i].bidId);
+            bidsGaps[proposals[proposer][proposalId].bidsRef[i].bidderAddress].push(proposals[proposer][proposalId].bidsRef[i].bidId);
         }
         delete proposals[proposer][proposalId];
-        proposalsGaps.push(proposalId);
+        proposalsGaps[proposer].push(proposalId);
     }
 
     function deleteProposal(address proposer, uint8 proposalId) internal{
@@ -194,10 +194,10 @@ contract NFTSwap {
         
         for(uint256 i = 0; i < proposals[proposer][proposalId].bidsRef.length; i++) {
             delete bids[proposals[proposer][proposalId].bidsRef[i].bidderAddress][proposals[proposer][proposalId].bidsRef[i].bidId];    //se c'è un buco nell'array bidsRef verrà cancellata proposals[0x0][0], valutare se conviene fare un check 
-            bidsGaps.push(proposals[proposer][proposalId].bidsRef[i].bidId);
+            bidsGaps[proposals[proposer][proposalId].bidsRef[i].bidderAddress].push(proposals[proposer][proposalId].bidsRef[i].bidId);
         }
         delete proposals[proposer][proposalId];
-        proposalsGaps.push(proposalId);
+        proposalsGaps[proposer].push(proposalId);
     }
 
     function deleteBid(uint8 bidId) external{
@@ -206,7 +206,7 @@ contract NFTSwap {
         
         delete proposals[bids[bidder][bidId].proposalRef.proposerAddress][bids[bidder][bidId].proposalRef.proposalId].bidsRef[bids[bidder][bidId].indexInProposal];      //gap unhandled
         delete bids[bidder][bidId];
-        bidsGaps.push(bidId);
+        bidsGaps[bidder].push(bidId);
     }
 
     function deleteBid(address bidder, uint8 bidId) internal{
@@ -214,7 +214,7 @@ contract NFTSwap {
         
         delete proposals[bids[bidder][bidId].proposalRef.proposerAddress][bids[bidder][bidId].proposalRef.proposalId].bidsRef[bids[bidder][bidId].indexInProposal];      //gap unhandled
         delete bids[bidder][bidId];
-        bidsGaps.push(bidId);
+        bidsGaps[bidder].push(bidId);
     }
 
     function getBidsFromProposal(address proposerAddress, uint8 proposalId) public view returns (BidIdentifier[] memory bidsRef) {
