@@ -101,7 +101,6 @@ export const callGetProposals = async (index = 0) => {
         )
         const caller_address = await signer.getAddress()
         const proposals = await myContract.proposals(caller_address, index)
-        console.log(proposals)
         return proposals
       } catch (error) {
         console.error(error)
