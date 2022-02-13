@@ -4,13 +4,15 @@ import { callGetProposals } from "../utils/blockchain"
 import { useState } from "react"
 import { BigNumber } from "ethers"
 
+const defaultProposal = {
+  nftAddress: "",
+  tokenId: BigNumber.from(0),
+  proposalId: 0,
+}
+
 function Main() {
   const { active } = useWeb3React()
-  const [proposals, setProposals] = useState({
-    nftAddress: "",
-    tokenId: BigNumber.from(0),
-    proposalId: 0
-  })
+  const [proposals, setProposals] = useState(defaultProposal)
 
   const onButtonPressed = async () => {
     try {
@@ -30,7 +32,6 @@ function Main() {
       </div>
     )
   }
-
 
   return (
     <div className="container mx-auto">
