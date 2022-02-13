@@ -31,6 +31,7 @@ function Main() {
     )
   }
 
+
   return (
     <div className="container mx-auto">
       <h2 className="text-xl font-bold basis-full justify-center">Home Page</h2>
