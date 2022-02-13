@@ -65,28 +65,41 @@ export default function Upload() {
 
   return (
     <div className="container mx-auto">
+      <h1 className="text-xl font-bold basis-full justify-center">
+        Make a proposal
+      </h1>
+      <Spacer space={32} />
       <form onSubmit={handleSubmit}>
-        <fieldset>
+        <div>
           <label>
             <p>NFT Address</p>
-            <input
-              name="nftaddress"
-              onChange={handleChange}
-              required
-              value={formData.nftaddress}
-            />
           </label>
+          <input
+            type="text"
+            name="nftaddress"
+            onChange={handleChange}
+            required
+            value={formData.nftaddress}
+          />
+        </div>
+        <div>
           <label>
             <p>Token ID</p>
-            <input
-              name="tokenid"
-              onChange={handleChange}
-              required
-              value={formData.tokenid}
-            />
           </label>
-        </fieldset>
-        <button type="submit">Submit</button>
+          <input
+            type="text"
+            name="tokenid"
+            onChange={handleChange}
+            required
+            value={formData.tokenid}
+          />
+        </div>
+        <button
+          type="submit"
+          className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+        >
+          Submit
+        </button>
       </form>
       <h2 className="text-xl font-bold basis-full justify-center">Your NFTs</h2>
       <Spacer space={32} />
