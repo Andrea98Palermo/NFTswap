@@ -116,7 +116,7 @@ export const callGetProposals = async (index = 0) => {
 }
 
 // TODO: Test it
-export const callBidsCount = async () => {
+export const callGetBidsCount = async () => {
   try {
     const { myContract } = await initContractCall()
     const bidsCount = myContract.bidsCount()

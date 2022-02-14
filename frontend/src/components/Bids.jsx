@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { callGetProposalsCount, callGetProposals } from "../utils/blockchain"
+import { callGetProposalsCount, callGetProposals, callBidsCount, callGetBidsFromProposal } from "../utils/blockchain"
 import { useWeb3React } from "@web3-react/core"
 import axios from "axios"
 import Spacer from "./Spacer"
@@ -11,14 +11,17 @@ const client = axios.create({
 
 export default function Bids() {
   const [nft, setNft] = useState(null)
+  const [bids, setBids] = useState(null)
   const { account, active } = useWeb3React()
 
   useEffect(async () => {
     if (active) {
       try {
+        // Get proposals
         const proposalsCount = parseInt(await callGetProposalsCount(), 16)
         const proposals = await callGetProposals(proposalsCount)
         let tokenIds = []
+        // have to change probably, because proposalsCount should be the number of ALL proposals in the contract
         for (let i = 0; i < proposalsCount - 1; i++) {
           tokenIds.push(parseInt(proposals[i].tokenId._hex, 16))
         }
@@ -31,6 +34,14 @@ export default function Bids() {
           }
         })
         setNft(listedProposals)
+
+        // Get bids relative to proposals published
+        //const bidsCount = parseInt(await callBidsCount(), 16)
+        let bids = {}
+        for (let p in listedProposals) {
+          bids[p.id] = await callGetBidsFromProposal(p.id)
+        }
+        setBids(bids)
       } catch (err) {
         console.log(err)
       }
