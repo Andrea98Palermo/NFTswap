@@ -3,7 +3,7 @@ import Spacer from "../components/Spacer"
 import axios from "axios"
 import { useState, useEffect, useReducer, useCallback } from "react"
 import { useWeb3React } from "@web3-react/core"
-import { callProposeSwap } from "../utils/blockchain"
+import { callMakeProposal } from "../utils/blockchain"
 
 const client = axios.create({
   baseURL: "https://api.opensea.io/api/v1/",
@@ -47,7 +47,7 @@ export default function Upload() {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault()
-    await callProposeSwap(formData.nftaddress, formData.tokenid)
+    await callMakeProposal(formData.nftaddress, formData.tokenid)
     dispatchFormData({ reset: true })
   }
 
@@ -65,7 +65,7 @@ export default function Upload() {
     console.log(asset.asset_contract.address)
     console.log(asset.token_id)
     try {
-      await callProposeSwap(asset.asset_contract.address, asset.token_id)
+      await callMakeProposal(asset.asset_contract.address, asset.token_id)
       setShowModal(false)
     } catch (error) {
       setError(error.message)
