@@ -26,8 +26,8 @@ contract NFTSwap {
     //mapping (address => mapping(uint8 => Bid)) public bids;
     mapping(uint256 => Proposal) public proposals;
     mapping(uint256 => Bid) public bids;
-    uint256 private proposalsCount;
-    uint256 private bidsCount;
+    uint256 public proposalsCount;
+    uint256 public bidsCount;
     uint256[] private proposalsGaps;
     uint256[] private bidsGaps;
     
@@ -36,10 +36,10 @@ contract NFTSwap {
     //when a user wants to make a proposal, front end must call approve of the nft on this contract before calling this function
     function makeProposal(IERC721 nftAddress, uint256 tokenId) external {
 
-        require(nftAddress.getApproved(tokenId) == address(this), "You have to approve the token you want to swap to this contract");
+        // require(nftAddress.getApproved(tokenId) == address(this), "You have to approve the token you want to swap to this contract");
 
         address proposer = msg.sender;
-        require(nftAddress.ownerOf(tokenId) == proposer, "You do not own the specified nft");
+        // require(nftAddress.ownerOf(tokenId) == proposer, "You do not own the specified nft");
         require( proposalsCount <= 255 || proposalsGaps.length > 0, "You have too many proposals, delete one before");
 
         uint256 index;
