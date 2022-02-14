@@ -30,7 +30,7 @@ export const callHelloWorld = async () => {
   }
 }
 
-export const callProposeSwap = async (nftAddress = "", tokenId = 0) => {
+export const callMakeProposal = async (nftAddress = "", tokenId = 0) => {
   try {
     const { ethereum } = window
 
@@ -42,7 +42,7 @@ export const callProposeSwap = async (nftAddress = "", tokenId = 0) => {
         contractABI,
         signer
       )
-      await myContract.proposeSwap(nftAddress, tokenId)
+      await myContract.makeProposal(nftAddress, tokenId)
       return 0
     } else {
       console.log("Ethereum object doesn't exist!")
