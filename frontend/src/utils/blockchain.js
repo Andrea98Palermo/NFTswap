@@ -6,23 +6,30 @@ const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
 const contractAddress = CONTRACT_ADDRESS
 const contractABI = contract.abi
 
-export const callMakeProposal = async (nftAddress = "", tokenId = 0) => {
+const initContractCall = async () => {
   try {
     const { ethereum } = window
 
     if (ethereum) {
       const provider = new ethers.providers.Web3Provider(ethereum)
+      if (window.location.href.includes("vercel")) {
+        const { chainId } = await provider.getNetwork()
+        if (chainId != "80001") {
+          alert("Please switch to the Polygon Mumbai Testnet")
+          // TODO: Stop the actual call to the contract
+          return
+        }
+      }
       const signer = provider.getSigner()
+      const caller_address = await signer.getAddress()
       const myContract = new ethers.Contract(
         contractAddress,
         contractABI,
         signer
       )
-      await myContract.makeProposal(nftAddress, tokenId)
-      return 0
+      return { provider, signer, caller_address, myContract }
     } else {
-      console.log("Ethereum object doesn't exist!")
-      return "Error in Contract call"
+      console.error("Ethereum object doesn't exist!")
     }
   } catch (error) {
     if (error.code === 4001) {
@@ -33,72 +40,56 @@ export const callMakeProposal = async (nftAddress = "", tokenId = 0) => {
   }
 }
 
-// TODO: Test the usage of this function
-export const callmakeBid = async (proposalId, bidNftAddress, bidNftTokenId) => {
+export const callMakeProposal = async (nftAddress = "", tokenId = 0) => {
   try {
-    const { ethereum } = window
-
-    if (ethereum) {
-      const provider = new ethers.providers.Web3Provider(ethereum)
-      const signer = provider.getSigner()
-      const myContract = new ethers.Contract(
-        contractAddress,
-        contractABI,
-        signer
-      )
-      const caller_address = await signer.getAddress()
-      await myContract.makeBid(
-        caller_address,
-        proposalId,
-        bidNftAddress,
-        bidNftTokenId
-      )
-      return 0
-    } else {
-      console.log("Ethereum object doesn't exist!")
-      return "Error in Contract call"
-    }
+    const { myContract } = await initContractCall()
+    await myContract.makeProposal(nftAddress, tokenId)
   } catch (error) {
-    console.log(error)
+    console.error(error)
+    throw error
+  }
+}
+
+// TODO: Test the usage of this function
+// TODO: Add parameters "type" to the function
+export const callMakeBid = async (proposalId, bidNftAddress, bidNftTokenId) => {
+  try {
+    const { myContract, caller_address } = initContractCall()
+    await myContract.makeBid(
+      caller_address,
+      proposalId,
+      bidNftAddress,
+      bidNftTokenId
+    )
+  } catch (error) {
+    console.error(error)
+    throw error
   }
 }
 
 export const callGetProposalsCount = async () => {
   try {
-    const { ethereum } = window
-    const provider = new ethers.providers.Web3Provider(ethereum)
-    const signer = provider.getSigner()
-    const myContract = new ethers.Contract(contractAddress, contractABI, signer)
-    const caller_address = await signer.getAddress()
-    const proposalsCount = await myContract.proposalsCount(caller_address)
+    const { myContract } = await initContractCall()
+    const proposalsCount = await myContract.proposalsCount()
+    console.log("Proposal Count: ", proposalsCount)
     return proposalsCount
-  } catch (err) {
-    console.log("Ethereum object doesn't exist!")
-    return "Error in Contract call"
+  } catch (error) {
+    console.error(error)
+    throw error
   }
 }
 
 export const callGetProposals = async (index = 0) => {
   try {
-    const { ethereum } = window
-
-    if (ethereum) {
-      const provider = new ethers.providers.Web3Provider(ethereum)
-      const signer = provider.getSigner()
-      const myContract = new ethers.Contract(contractAddress, contractABI, signer)
-      const caller_address = await signer.getAddress()
-      var proposals = []
-      for (var i = 0; i < index; i++) {
-        var p = await myContract.proposals(caller_address, i)
-        proposals.push(p)
-      }
-      return proposals
-    } else {
-      console.log("Ethereum object doesn't exist!")
-      return "Error in Contract call"
+    const { myContract, caller_address } = await initContractCall()
+    var proposals = []
+    for (var i = 0; i < index; i++) {
+      var p = await myContract.proposals(caller_address, i)
+      proposals.push(p)
     }
+    return proposals
   } catch (error) {
-    console.log(error)
-    return null
+    console.error(error)
+    throw error
   }
 }

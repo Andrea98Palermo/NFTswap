@@ -47,7 +47,7 @@ function Main() {
     <div className="container mx-auto">
       <h2 className="text-xl font-bold basis-full justify-center">Home Page</h2>
       <Spacer space={32} />
-      {active ? (
+      {!active ? (
         <>
           <button
             id="callButton"
