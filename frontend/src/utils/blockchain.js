@@ -71,7 +71,6 @@ export const callGetProposalsCount = async () => {
   try {
     const { myContract } = await initContractCall()
     const proposalsCount = await myContract.proposalsCount()
-    console.log("Proposal Count: ", proposalsCount)
     return proposalsCount
   } catch (error) {
     console.error(error)
@@ -84,9 +83,11 @@ export const callGetProposals = async (index = 0) => {
     const { myContract, caller_address } = await initContractCall()
     var proposals = []
     for (var i = 0; i < index; i++) {
-      var p = await myContract.proposals(caller_address, i)
+      var p = await myContract.proposals(i)
       proposals.push(p)
     }
+    console.log(proposals.filter(p => p.proposer === caller_address))
+    // TODO: Render the proposals to the UI
     return proposals
   } catch (error) {
     console.error(error)
