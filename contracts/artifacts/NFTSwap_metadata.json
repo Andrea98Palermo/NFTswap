@@ -1,0 +1,382 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "proposalId",
+						"type": "uint8"
+					},
+					{
+						"internalType": "address",
+						"name": "bidderAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "bidId",
+						"type": "uint8"
+					}
+				],
+				"name": "acceptBid",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "proposalId",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint256",
+						"name": "bidIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "acceptBid",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"name": "bids",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "proposerAddress",
+								"type": "address"
+							},
+							{
+								"internalType": "uint8",
+								"name": "proposalId",
+								"type": "uint8"
+							}
+						],
+						"internalType": "struct ProposalIdentifier",
+						"name": "proposalRef",
+						"type": "tuple"
+					},
+					{
+						"internalType": "contract IERC721",
+						"name": "nftAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "indexInProposal",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "bidId",
+						"type": "uint8"
+					}
+				],
+				"name": "deleteBid",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "proposalId",
+						"type": "uint8"
+					}
+				],
+				"name": "deleteProposal",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "proposerAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "proposalId",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "getBidFromProposal",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "bidderAddress",
+								"type": "address"
+							},
+							{
+								"internalType": "uint8",
+								"name": "bidId",
+								"type": "uint8"
+							}
+						],
+						"internalType": "struct BidIdentifier",
+						"name": "bidRef",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "proposerAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "proposalId",
+						"type": "uint8"
+					}
+				],
+				"name": "getBidsFromProposal",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "bidderAddress",
+								"type": "address"
+							},
+							{
+								"internalType": "uint8",
+								"name": "bidId",
+								"type": "uint8"
+							}
+						],
+						"internalType": "struct BidIdentifier[]",
+						"name": "bidsRef",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "proposerAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "proposalId",
+						"type": "uint8"
+					},
+					{
+						"internalType": "contract IERC721",
+						"name": "bidNftAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "bidNftTokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "makeBid",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "contract IERC721",
+						"name": "nftAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "makeProposal",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"name": "proposals",
+				"outputs": [
+					{
+						"internalType": "contract IERC721",
+						"name": "nftAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint8",
+						"name": "proposalId",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "proposalId",
+						"type": "uint8"
+					},
+					{
+						"internalType": "address",
+						"name": "bidder",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "bidId",
+						"type": "uint8"
+					}
+				],
+				"name": "refuseBid",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "proposalId",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint256",
+						"name": "bidIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "refuseBid",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/NFTSwap.sol": "NFTSwap"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"@openzeppelin/contracts/token/ERC721/IERC721.sol": {
+			"keccak256": "0x516a22876c1fab47f49b1bc22b4614491cd05338af8bd2e7b382da090a079990",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a439187f7126d31add4557f82d8aed6be0162007cd7182c48fd934dbab8f3849",
+				"dweb:/ipfs/QmRPLguRFvrRJS7r6F1bcLvsx6q1VrgjEpZafyeL8D7xZh"
+			]
+		},
+		"@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+			"keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
+				"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
+			]
+		},
+		"contracts/NFTSwap.sol": {
+			"keccak256": "0x3bfbc97398e5073f526c23ba9e45508c764add6bd3f3b09f7bc19c320c9ef8d9",
+			"urls": [
+				"bzz-raw://b26b2e69964ef0913ead90927ee7858a71709bcd19ae6490eef5c38b84cad01f",
+				"dweb:/ipfs/Qmbg2HyYfr4wzKNhtNvYumoXhi1Vw13Ue2no7w6cf1z6b1"
+			]
+		}
+	},
+	"version": 1
+}

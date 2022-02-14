@@ -1,24 +1,27 @@
-import Card from "./Card"
 import Spacer from "./Spacer"
-import axios from "axios"
-import { useState, useEffect } from "react"
 import { useWeb3React } from "@web3-react/core"
+import { callGetProposals } from "../utils/blockchain"
+import { useState } from "react"
+import { BigNumber } from "ethers"
 
-const client = axios.create({
-  baseURL: "https://api.opensea.io/api/v1/",
-})
+const defaultProposal = {
+  nftAddress: "",
+  tokenId: BigNumber.from(0),
+  proposalId: 0,
+}
 
 function Main() {
-  const [nft, setNft] = useState(null)
-  const { account, active } = useWeb3React()
+  const { active } = useWeb3React()
+  const [proposals, setProposals] = useState(defaultProposal)
 
-  useEffect(async () => {
-    if (active) {
-      const response = await client.get("assets?owner=" + account)
-      console.log(response.data)
-      setNft(response.data)
+  const onButtonPressed = async () => {
+    try {
+      const proposal = await callGetProposals(0)
+      setProposals(proposal)
+    } catch (error) {
+      console.error(error)
     }
-  }, [account])
+  }
 
   if (!active) {
     return (
@@ -32,26 +35,27 @@ function Main() {
 
   return (
     <div className="container mx-auto">
-      <h2 className="text-xl font-bold basis-full justify-center">
-        Latest NFTs
-      </h2>
+      <h2 className="text-xl font-bold basis-full justify-center">Home Page</h2>
       <Spacer space={32} />
-      <div className="container grid gap-5 grid-cols-4">
-        {!nft && <div>Loading...</div>}
-        {nft &&
-          nft.assets.length ?
-          nft.assets.map((asset, index) => {
-            return (
-              <Card
-                key={index}
-                title={asset.name}
-                description={asset.description}
-                image={asset.image_url}
-                link={asset.permalink}
-              />
-            )
-          }) : null}
-      </div>
+      {active ? (
+        <>
+          <button
+            id="callButton"
+            onClick={onButtonPressed}
+            type="button"
+            className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+          >
+            Call Contract
+          </button>
+          <div>
+            <p>NFT Address: {proposals.nftAddress}</p>
+            <p>Token ID: {proposals.tokenId._hex}</p>
+            <p>Proposal ID: {proposals.proposalId}</p>
+          </div>
+        </>
+      ) : (
+        <p />
+      )}
     </div>
   )
 }
