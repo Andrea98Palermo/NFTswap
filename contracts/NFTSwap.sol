@@ -25,10 +25,10 @@ contract NFTSwap {
     //mapping (address => mapping(uint8 => Bid)) public bids;
     mapping(uint256 => Proposal) public proposals;
     mapping(uint256 => Bid) public bids;
-    uint256 private proposalsCount;
-    uint256 private bidsCount;
-    uint256[] private proposalsGaps;
-    uint256[] private bidsGaps;
+    uint256 public proposalsCount = 1;
+    uint256 public bidsCount = 1;
+    uint256[] public proposalsGaps;
+    uint256[] public bidsGaps;
     
     constructor() {}
     
@@ -39,7 +39,7 @@ contract NFTSwap {
 
         address proposer = msg.sender;
         require(nftAddress.ownerOf(tokenId) == proposer, "You do not own the specified nft");
-        require( proposalsCount <= 255 || proposalsGaps.length > 0, "You have too many proposals, delete one before");
+        //require( proposalsCount <= 255 || proposalsGaps.length > 0, "You have too many proposals, delete one before");
 
         uint256 index;
         if (proposalsGaps.length > 0) {
@@ -66,7 +66,7 @@ contract NFTSwap {
         
         address bidder = msg.sender;
         require(bidNftAddress.ownerOf(bidNftTokenId) == bidder, "You do not own the specified nft");
-        require(bidsGaps.length > 0 || bidsCount <= 255, "You have too many bids, delete one before");
+        //require(bidsGaps.length > 0 || bidsCount <= 255, "You have too many bids, delete one before");
 
         Bid memory bid;
         bid.bidder = bidder;
