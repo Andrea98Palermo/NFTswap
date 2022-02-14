@@ -1,7 +1,7 @@
 import { ethers, BigNumber } from "ethers"
 import contract from "../contracts/contract-abi.json"
 
-const CONTRACT_ADDRESS = "0xcd2D641FE63D19B5b877D5990048B5000EeBD759"
+const CONTRACT_ADDRESS = "0xe777D31b07aC1c48CBaB1d4ed4d88D74B595Af6F"
 
 const contractAddress = CONTRACT_ADDRESS
 const contractABI = contract.abi
@@ -96,9 +96,9 @@ export const callGetAllProposals = async (index = 0) => {
 export const callGetProposals = async (index = 0) => {
   try {
     const { myContract, caller_address } = await initContractCall()
-    var allProposals = []
-    for (var i = 0; i < index; i++) {
-      var p = await myContract.proposals(i)
+    let allProposals = []
+    for (let i = 0; i < index; i++) {
+      let p = await myContract.proposals(i)
       allProposals.push(p)
     }
     let proposals = []
@@ -112,5 +112,48 @@ export const callGetProposals = async (index = 0) => {
   } catch (error) {
     console.error(error)
     throw error
+  }
+}
+
+// TODO: Test it
+export const callBidsCount = async () => {
+  try {
+    const { myContract } = await initContractCall()
+    const bidsCount = myContract.bidsCount()
+    return bidsCount
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+// TODO: Test it
+export const callGetBidFromProposal = async (proposalId = 0, index = 0) => {
+  try {
+    const { myContract } = await initContractCall()
+    const bidsCount = await callBidsCount()
+    let bids = []
+    for (let i = 0; i < bidsCount; i++) {
+      let b = await myContract.bidsCount(proposalId, index)
+      bids.push(b)
+    }
+    console.log(bids)
+    return bids
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+// TODO: Test it
+export const callGetBidsFromProposal = async (proposalId = 0) => {
+  try {
+    const { myContract } = await initContractCall()
+    let bids = await myContract(proposalId)
+    console.log(bids)
+    return bids
+  } catch (err) {
+    console.log(err)
+    throw err
   }
 }
