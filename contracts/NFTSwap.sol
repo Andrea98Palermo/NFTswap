@@ -18,7 +18,6 @@ struct Proposal {
     uint256[] bidsRef;
 }
 
-
 contract NFTSwap {    
     
     //mapping (address => mapping(uint8 => Proposal)) public proposals;

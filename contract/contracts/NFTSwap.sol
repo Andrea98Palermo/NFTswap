@@ -26,21 +26,22 @@ contract NFTSwap {
     //mapping (address => mapping(uint8 => Bid)) public bids;
     mapping(uint256 => Proposal) public proposals;
     mapping(uint256 => Bid) public bids;
-    uint256 public proposalsCount;
-    uint256 public bidsCount;
-    uint256[] private proposalsGaps;
-    uint256[] private bidsGaps;
+    uint256 public proposalsCount = 1;
+    uint256 public bidsCount = 1;
+    uint256[] public proposalsGaps;
+    uint256[] public bidsGaps;
     
     constructor() {}
     
     //when a user wants to make a proposal, front end must call approve of the nft on this contract before calling this function
     function makeProposal(IERC721 nftAddress, uint256 tokenId) external {
 
-        // require(nftAddress.getApproved(tokenId) == address(this), "You have to approve the token you want to swap to this contract");
+        //require(nftAddress.getApproved(tokenId) == address(this), "You have to approve the token you want to swap to this contract");
 
         address proposer = msg.sender;
-        // require(nftAddress.ownerOf(tokenId) == proposer, "You do not own the specified nft");
-        require( proposalsCount <= 255 || proposalsGaps.length > 0, "You have too many proposals, delete one before");
+        //require(nftAddress.ownerOf(tokenId) == proposer, "You do not own the specified nft");
+        
+        //require( proposalsCount <= 255 || proposalsGaps.length > 0, "You have too many proposals, delete one before");
 
         uint256 index;
         if (proposalsGaps.length > 0) {
@@ -67,7 +68,7 @@ contract NFTSwap {
         
         address bidder = msg.sender;
         require(bidNftAddress.ownerOf(bidNftTokenId) == bidder, "You do not own the specified nft");
-        require(bidsGaps.length > 0 || bidsCount <= 255, "You have too many bids, delete one before");
+        //require(bidsGaps.length > 0 || bidsCount <= 255, "You have too many bids, delete one before");
 
         Bid memory bid;
         bid.bidder = bidder;
