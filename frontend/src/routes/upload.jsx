@@ -4,6 +4,7 @@ import axios from "axios"
 import { useState, useEffect, useReducer, useCallback } from "react"
 import { useWeb3React } from "@web3-react/core"
 import { callMakeProposal } from "../utils/blockchain"
+import { sanityclient } from "../utils/sanity"
 
 const client = axios.create({
   baseURL: "https://api.opensea.io/api/v1/",
@@ -43,6 +44,21 @@ export default function Upload() {
         alert(error)
       }
     }
+  }, [account])
+
+  useEffect(() => {
+    if(!account) return
+    ;(async () => {
+      const userDoc = {
+        _type: "users",
+        _id: account,
+        userName: "Unknown",
+        walletAddress: account
+      }
+      const result = await sanityclient.createIfNotExists(userDoc)
+      console.log(result)
+
+    })()
   }, [account])
 
   const handleFormSubmit = async (event) => {
