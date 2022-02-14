@@ -18,11 +18,6 @@
 						"type": "uint8"
 					},
 					{
-						"internalType": "address",
-						"name": "bidderAddress",
-						"type": "address"
-					},
-					{
 						"internalType": "uint8",
 						"name": "bidId",
 						"type": "uint8"
@@ -37,29 +32,6 @@
 				"inputs": [
 					{
 						"internalType": "uint8",
-						"name": "proposalId",
-						"type": "uint8"
-					},
-					{
-						"internalType": "uint256",
-						"name": "bidIndex",
-						"type": "uint256"
-					}
-				],
-				"name": "acceptBid",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					},
-					{
-						"internalType": "uint8",
 						"name": "",
 						"type": "uint8"
 					}
@@ -67,21 +39,14 @@
 				"name": "bids",
 				"outputs": [
 					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "proposerAddress",
-								"type": "address"
-							},
-							{
-								"internalType": "uint8",
-								"name": "proposalId",
-								"type": "uint8"
-							}
-						],
-						"internalType": "struct ProposalIdentifier",
+						"internalType": "address",
+						"name": "bidder",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
 						"name": "proposalRef",
-						"type": "tuple"
+						"type": "uint8"
 					},
 					{
 						"internalType": "contract IERC721",
@@ -131,11 +96,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "proposerAddress",
-						"type": "address"
-					},
-					{
 						"internalType": "uint8",
 						"name": "proposalId",
 						"type": "uint8"
@@ -149,21 +109,9 @@
 				"name": "getBidFromProposal",
 				"outputs": [
 					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "bidderAddress",
-								"type": "address"
-							},
-							{
-								"internalType": "uint8",
-								"name": "bidId",
-								"type": "uint8"
-							}
-						],
-						"internalType": "struct BidIdentifier",
+						"internalType": "uint8",
 						"name": "bidRef",
-						"type": "tuple"
+						"type": "uint8"
 					}
 				],
 				"stateMutability": "view",
@@ -171,11 +119,6 @@
 			},
 			{
 				"inputs": [
-					{
-						"internalType": "address",
-						"name": "proposerAddress",
-						"type": "address"
-					},
 					{
 						"internalType": "uint8",
 						"name": "proposalId",
@@ -185,21 +128,9 @@
 				"name": "getBidsFromProposal",
 				"outputs": [
 					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "bidderAddress",
-								"type": "address"
-							},
-							{
-								"internalType": "uint8",
-								"name": "bidId",
-								"type": "uint8"
-							}
-						],
-						"internalType": "struct BidIdentifier[]",
+						"internalType": "uint8[]",
 						"name": "bidsRef",
-						"type": "tuple[]"
+						"type": "uint8[]"
 					}
 				],
 				"stateMutability": "view",
@@ -207,11 +138,6 @@
 			},
 			{
 				"inputs": [
-					{
-						"internalType": "address",
-						"name": "proposerAddress",
-						"type": "address"
-					},
 					{
 						"internalType": "uint8",
 						"name": "proposalId",
@@ -254,11 +180,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					},
-					{
 						"internalType": "uint8",
 						"name": "",
 						"type": "uint8"
@@ -266,6 +187,11 @@
 				],
 				"name": "proposals",
 				"outputs": [
+					{
+						"internalType": "address",
+						"name": "proposer",
+						"type": "address"
+					},
 					{
 						"internalType": "contract IERC721",
 						"name": "nftAddress",
@@ -293,32 +219,9 @@
 						"type": "uint8"
 					},
 					{
-						"internalType": "address",
-						"name": "bidder",
-						"type": "address"
-					},
-					{
 						"internalType": "uint8",
 						"name": "bidId",
 						"type": "uint8"
-					}
-				],
-				"name": "refuseBid",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint8",
-						"name": "proposalId",
-						"type": "uint8"
-					},
-					{
-						"internalType": "uint256",
-						"name": "bidIndex",
-						"type": "uint256"
 					}
 				],
 				"name": "refuseBid",
@@ -334,7 +237,11 @@
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"refuseBid(uint8,uint8)": {
+					"notice": "function acceptBid(uint8 proposalId, uint256 bidIndex) external { address proposerAddress = msg.sender; require( proposals[proposerAddress][proposalId].nftAddress != IERC721(address(0x0)), \"Specified proposal does not exist\" ); require( proposals[proposerAddress][proposalId].bidsRef[bidIndex].bidderAddress != address(0x0), \"Specified bid does not exist\" ); BidIdentifier memory bidIdentifier = proposals[proposerAddress][proposalId].bidsRef[bidIndex]; IERC721 nftAddress1 = proposals[proposerAddress][proposalId].nftAddress; uint256 tokenId1 = proposals[proposerAddress][proposalId].tokenId; IERC721 nftAddress2 = bids[bidIdentifier.bidderAddress][bidIdentifier.bidId].nftAddress; uint256 tokenId2 = bids[bidIdentifier.bidderAddress][bidIdentifier.bidId].tokenId; if(nftAddress1.ownerOf(tokenId1) != proposerAddress) { deleteProposal(proposerAddress, proposalId); revert(\"You do not own the nft anymore\"); } if(nftAddress1.getApproved(tokenId1) != address(this)) { deleteProposal(proposerAddress, proposalId); revert(\"You removed approval for the nft to this contract, please re-approve it\"); } address bidderAddress = bidIdentifier.bidderAddress; uint8 bidId = bidIdentifier.bidId; if(nftAddress2.ownerOf(tokenId2) != bidderAddress) { deleteBid(bidderAddress, bidId); revert(\"The bidder does not own the nft anymore\"); } if(nftAddress2.getApproved(tokenId2) != address(this)) { deleteBid(bidderAddress, bidId); revert(\"The bidder removed approval for the bidded nft to this contract. Impossible to complete the swap until the bidder re-approves the nft\"); } nftAddress1.safeTransferFrom(proposerAddress, bidIdentifier.bidderAddress, tokenId1); nftAddress2.safeTransferFrom(bidIdentifier.bidderAddress, proposerAddress, tokenId2); deleteProposal(proposerAddress, proposalId); }"
+				}
+			},
 			"version": 1
 		}
 	},
@@ -371,10 +278,10 @@
 			]
 		},
 		"contracts/NFTSwap.sol": {
-			"keccak256": "0x3bfbc97398e5073f526c23ba9e45508c764add6bd3f3b09f7bc19c320c9ef8d9",
+			"keccak256": "0x42e8632c0d5197b8be798b5c18440391dc5e02040fdd35341f649a715f44fd94",
 			"urls": [
-				"bzz-raw://b26b2e69964ef0913ead90927ee7858a71709bcd19ae6490eef5c38b84cad01f",
-				"dweb:/ipfs/Qmbg2HyYfr4wzKNhtNvYumoXhi1Vw13Ue2no7w6cf1z6b1"
+				"bzz-raw://76c79325bb245739c433427cea78741559c1574cb094606a1c61b984027568db",
+				"dweb:/ipfs/QmdT2bcNqYMDxdPGNECXH3eYkD766vmFfaK6cP6xc1CMDc"
 			]
 		}
 	},
