@@ -34,7 +34,7 @@ contract NFTSwap {
 
     mapping(address => mapping(uint8 => Proposal)) public proposals;
     mapping(address => mapping(uint8 => Bid)) public bids;
-    mapping(address => uint8) private proposalsCount;
+    mapping(address => uint8) public proposalsCount;
     mapping(address => uint8) private bidsCount;
     uint8[] proposalsGaps;
     uint8[] bidsGaps;
@@ -332,11 +332,7 @@ contract NFTSwap {
         bidsGaps.push(bidId);
     }
 
-    function getBidsFromProposal(address proposerAddress, uint8 proposalId)
-        public
-        view
-        returns (BidIdentifier[] memory bidsRef)
-    {
+    function getBidsFromProposal(address proposerAddress, uint8 proposalId) public view returns (BidIdentifier[] memory bidsRef) {
         require(
             proposals[proposerAddress][proposalId].nftAddress !=
                 IERC721(address(0x0)),

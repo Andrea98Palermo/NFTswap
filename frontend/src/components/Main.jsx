@@ -10,20 +10,21 @@ const client = axios.create({
 
 function Main() {
   const [nft, setNft] = useState(null)
-  const { account, active} = useWeb3React()
+  const { account, active } = useWeb3React()
 
   useEffect(async () => {
-    if(active){
+    if (active) {
       const response = await client.get("assets?owner=" + account)
+      console.log(response.data)
       setNft(response.data)
     }
   }, [account])
 
-  if (!active)  {
+  if (!active) {
     return (
       <div className="container mx-auto">
         <h2 className="text-xl font-bold basis-full justify-center">
-        Connect a Wallet
+          Connect a Wallet
         </h2>
       </div>
     )
@@ -37,7 +38,6 @@ function Main() {
       <Spacer space={32} />
       <div className="container grid gap-5 grid-cols-4">
         {!nft && <div>Loading...</div>}
-        {nft && !nft.assets.length && <div>No NFTs found</div>}
         {nft &&
           nft.assets.length ?
           nft.assets.map((asset, index) => {
