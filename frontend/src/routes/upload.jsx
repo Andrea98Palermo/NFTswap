@@ -40,6 +40,7 @@ export default function Upload() {
     if (active) {
       try {
         const response = await client.get("assets?owner=" + account)
+        console.log(response.data)
         setNft(response.data)
       } catch (error) {
         alert(error)
@@ -65,9 +66,9 @@ export default function Upload() {
   const handleCardSubmit = async (event) => {
     event.preventDefault()
     console.log(asset.asset_contract.address)
-    console.log(asset.token_id)
+    console.log(asset.id)
     try {
-      await callMakeProposal(asset.asset_contract.address, asset.token_id)
+      await callMakeProposal(asset.asset_contract.address, asset.id)
       setShowModal(false)
     } catch (error) {
       setError(error.message)

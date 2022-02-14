@@ -1,7 +1,7 @@
 import { ethers, BigNumber } from "ethers"
 import contract from "../contracts/contract-abi.json"
 
-const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+const CONTRACT_ADDRESS = "0xcd2D641FE63D19B5b877D5990048B5000EeBD759"
 
 const contractAddress = CONTRACT_ADDRESS
 const contractABI = contract.abi
@@ -96,14 +96,19 @@ export const callGetAllProposals = async (index = 0) => {
 export const callGetProposals = async (index = 0) => {
   try {
     const { myContract, caller_address } = await initContractCall()
-    var proposals = []
+    var allProposals = []
     for (var i = 0; i < index; i++) {
       var p = await myContract.proposals(i)
-      proposals.push(p)
+      allProposals.push(p)
     }
-    const result = proposals.filter(p => p.proposer === caller_address)
-    // TODO: Render the proposals to the UI
-    return result
+    let proposals = []
+    allProposals.map((token) => {
+      if (token.proposer == caller_address) {
+        proposals.push(token)
+      }
+    })
+    console.log(proposals)
+    return proposals
   } catch (error) {
     console.error(error)
     throw error

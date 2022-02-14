@@ -16,11 +16,11 @@ export default function Proposals() {
   useEffect(async () => {
     if (active) {
       try {
-        const proposalsCount = await callGetProposalsCount()
+        const proposalsCount = parseInt(await callGetProposalsCount(), 16)
         const proposals = await callGetProposals(proposalsCount)
         let tokenIds = []
-        for (let i = 0; i < proposalsCount; i++) {
-          tokenIds.push(parseInt(proposals[i][1]._hex, 16))
+        for (let i = 0; i < proposalsCount - 1; i++) {
+          tokenIds.push(parseInt(proposals[i].tokenId._hex, 16))
         }
         const response = await client.get("assets?owner=" + account)
         const tokens = response.data
