@@ -74,7 +74,6 @@ export const callGetProposalsCount = async () => {
     const myContract = new ethers.Contract(contractAddress, contractABI, signer)
     const caller_address = await signer.getAddress()
     const proposalsCount = await myContract.proposalsCount(caller_address)
-    console.log(proposalsCount)
     return proposalsCount
   } catch (err) {
     console.log("Ethereum object doesn't exist!")
@@ -87,28 +86,22 @@ export const callGetProposals = async (index = 0) => {
     const { ethereum } = window
 
     if (ethereum) {
-      try {
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner()
-        const myContract = new ethers.Contract(contractAddress, contractABI, signer)
-        const caller_address = await signer.getAddress()
-        var proposals = new Array(index)
-        for (var i = 0; i < index; i++) {
-          var p = await myContract.proposals(caller_address, i)
-          proposals.push(p)
-        }
-        return proposals
-      } catch (e) {
-        // Send error to Error reporting service in 
-        // production/staging stage or log to console in dev.
-        console.error(e)
-        return null
+      const provider = new ethers.providers.Web3Provider(ethereum)
+      const signer = provider.getSigner()
+      const myContract = new ethers.Contract(contractAddress, contractABI, signer)
+      const caller_address = await signer.getAddress()
+      var proposals = []
+      for (var i = 0; i < index; i++) {
+        var p = await myContract.proposals(caller_address, i)
+        proposals.push(p)
       }
+      return proposals
     } else {
       console.log("Ethereum object doesn't exist!")
       return "Error in Contract call"
     }
   } catch (error) {
     console.log(error)
+    return null
   }
 }
