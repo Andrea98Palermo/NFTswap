@@ -23,6 +23,16 @@ function Main() {
     }
   }
 
+  if(!window.ethereum){
+    return (
+      <div className="container mx-auto">
+        <h2 className="text-xl font-bold basis-full justify-center">
+          Install MetaMask
+        </h2>
+      </div>
+    )
+  }
+
   if (!active) {
     return (
       <div className="container mx-auto">
