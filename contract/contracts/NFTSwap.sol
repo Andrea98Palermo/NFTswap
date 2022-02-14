@@ -30,7 +30,7 @@ struct Proposal {
 contract NFTSwap {
     mapping(address => mapping(uint8 => Proposal)) public proposals;
     mapping(address => mapping(uint8 => Bid)) public bids;
-    mapping(address => uint8) private proposalsCount;
+    mapping(address => uint8) public proposalsCount;
     mapping(address => uint8) private bidsCount;
     mapping(address => uint8[]) private proposalsGaps;
     mapping(address => uint8[]) private bidsGaps;
@@ -340,11 +340,7 @@ contract NFTSwap {
         bidsGaps[bidder].push(bidId);
     }
 
-    function getBidsFromProposal(address proposerAddress, uint8 proposalId)
-        public
-        view
-        returns (BidIdentifier[] memory bidsRef)
-    {
+    function getBidsFromProposal(address proposerAddress, uint8 proposalId) public view returns (BidIdentifier[] memory bidsRef) {
         require(
             proposals[proposerAddress][proposalId].nftAddress !=
                 IERC721(address(0x0)),

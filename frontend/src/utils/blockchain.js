@@ -86,31 +86,42 @@ export const callmakeBid = async (proposalId, bidNftAddress, bidNftTokenId) => {
   }
 }
 
+export const callGetProposalsCount = async () => {
+  try {
+    const { ethereum } = window
+    const provider = new ethers.providers.Web3Provider(ethereum)
+    const signer = provider.getSigner()
+    const myContract = new ethers.Contract(contractAddress, contractABI, signer)
+    const caller_address = await signer.getAddress()
+    const proposalsCount = await myContract.proposalsCount(caller_address)
+    return proposalsCount
+  } catch (err) {
+    console.log("Ethereum object doesn't exist!")
+    return "Error in Contract call"
+  }
+}
+
 export const callGetProposals = async (index = 0) => {
   try {
     const { ethereum } = window
 
     if (ethereum) {
-      try {
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner()
-        const myContract = new ethers.Contract(
-          contractAddress,
-          contractABI,
-          signer
-        )
-        const caller_address = await signer.getAddress()
-        const proposals = await myContract.proposals(caller_address, index)
-        return proposals
-      } catch (error) {
-        console.error(error)
-        throw error
+      const provider = new ethers.providers.Web3Provider(ethereum)
+      const signer = provider.getSigner()
+      const myContract = new ethers.Contract(contractAddress, contractABI, signer)
+      const caller_address = await signer.getAddress()
+      var proposals = []
+      for (var i = 0; i < index; i++) {
+        var p = await myContract.proposals(caller_address, i)
+        proposals.push(p)
       }
+      return proposals
     } else {
       console.log("Ethereum object doesn't exist!")
       return "Error in Contract call"
     }
   } catch (error) {
     console.log(error)
+    return null
   }
 }
