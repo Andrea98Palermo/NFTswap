@@ -35,6 +35,7 @@ export default function Proposals() {
             listedProposals.push(token)
           }
         })
+        console.log(listedProposals)
         setNft(listedProposals)
 
         // Get bids relative to proposals published
