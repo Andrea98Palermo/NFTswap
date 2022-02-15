@@ -5,6 +5,7 @@ import { useState, useEffect, useReducer, useCallback } from "react"
 import { useWeb3React } from "@web3-react/core"
 import { callMakeProposal } from "../utils/blockchain"
 
+// TODO: Chech if Alchemy's API are faster than Opensea's
 const client = axios.create({
   baseURL: "https://api.opensea.io/api/v1/",
 })

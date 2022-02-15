@@ -1,19 +1,65 @@
 import Spacer from "./Spacer"
+import Card from "./Card"
 import { useWeb3React } from "@web3-react/core"
-import { callGetProposals } from "../utils/blockchain"
-import { useState } from "react"
-import { BigNumber } from "ethers"
+import { callGetProposals, callGetProposalsCount } from "../utils/blockchain"
+import { useState, useEffect } from "react"
+// import { BigNumber } from "ethers"
+import axios from "axios"
 
-const defaultProposal = {
-  nftAddress: "",
-  tokenId: BigNumber.from(0),
-  proposalId: 0,
-}
+//onst defaultProposal = {
+//  nftAddress: "",
+//  tokenId: BigNumber.from(0),
+//  proposalId: 0,
+//}
+
+const apiKey = process.env.REACT_APP_ALCHEMY_API_KEY || "demo"
+const baseURL = `https://eth-mainnet.g.alchemy.com/v2/${apiKey}/getNFTMetadata`
+
+const client = axios.create({
+  baseURL: baseURL,
+})
 
 function Main() {
-  const { active } = useWeb3React()
-  const [proposals, setProposals] = useState(defaultProposal)
+  const { account, active } = useWeb3React()
+  //const [proposals, setProposals] = useState(defaultProposal)
+  const [nft, setNft] = useState([])
 
+  useEffect(async () => {
+    if (active) {
+      try {
+        const proposalsCount = await callGetProposalsCount()
+        const proposals = await callGetProposals(proposalsCount)
+        const result = proposals.filter(
+          (proposal) =>
+            proposal.proposer !== "0x0000000000000000000000000000000000000000"
+        )
+        let localNFT = []
+        for (let proposal of result) {
+          localNFT.push([proposal.nftAddress, proposal.tokenId.toString()])
+        }
+        let promises = []
+        let globalNFT = []
+        for (let nft of localNFT) {
+          promises.push(
+            client
+              .get(`?contractAddress=${nft[0]}&tokenId=${nft[1]}`)
+              // TODO: Check if there is (spoiler: there is) a better way to async add to the `nft` state
+              // and async render also the `Card` component
+              // Up to now the requests are mode in parallel, but we wait for all of them to finish to set the `nft` state
+              // and render the `Card` component
+              .then((response) => {
+                globalNFT.push(response.data)
+              })
+          )
+        }
+        Promise.all(promises).then(() => setNft(globalNFT))
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }, [account])
+
+  /*
   const onButtonPressed = async () => {
     try {
       const proposal = await callGetProposals(0)
@@ -22,8 +68,9 @@ function Main() {
       console.error(error)
     }
   }
+  */
 
-  if(!window.ethereum){
+  if (!window.ethereum) {
     return (
       <div className="container mx-auto">
         <h2 className="text-xl font-bold basis-full justify-center">
@@ -47,20 +94,25 @@ function Main() {
     <div className="container mx-auto">
       <h2 className="text-xl font-bold basis-full justify-center">Home Page</h2>
       <Spacer space={32} />
-      {!active ? (
+
+      {active ? (
         <>
-          <button
-            id="callButton"
-            onClick={onButtonPressed}
-            type="button"
-            className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-          >
-            Call Contract
-          </button>
-          <div>
-            <p>NFT Address: {proposals.nftAddress}</p>
-            <p>Token ID: {proposals.tokenId._hex}</p>
-            <p>Proposal ID: {proposals.proposalId}</p>
+          <div className="flex flex-wrap justify-center items-start">
+            {nft && nft.length ? (
+              nft.map((asset, index) => {
+                return (
+                  <button key={index}>
+                    <Card
+                      title={asset.title}
+                      description={asset.description}
+                      image={asset.metadata.image}
+                    />
+                  </button>
+                )
+              })
+            ) : (
+              <></>
+            )}
           </div>
         </>
       ) : (
