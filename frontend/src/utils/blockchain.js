@@ -116,7 +116,7 @@ export const callGetProposals = async (index = 0) => {
 }
 
 // TODO: Test it
-export const callGetBidsCount = async () => {
+export const callBidsCount = async () => {
   try {
     const { myContract } = await initContractCall()
     const bidsCount = myContract.bidsCount()
@@ -149,7 +149,7 @@ export const callGetBidFromProposal = async (proposalId = 0, index = 0) => {
 export const callGetBidsFromProposal = async (proposalId = 0) => {
   try {
     const { myContract } = await initContractCall()
-    let bids = await myContract(proposalId)
+    let bids = await myContract.getBidsFromProposal(proposalId)
     console.log(bids)
     return bids
   } catch (err) {

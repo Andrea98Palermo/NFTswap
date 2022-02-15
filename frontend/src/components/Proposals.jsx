@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"
-import { callGetProposalsCount, callGetProposals } from "../utils/blockchain"
+import { useState, useEffect, useCallback } from "react"
+import { callGetProposalsCount, callGetProposals, callGetBidsFromProposal } from "../utils/blockchain"
 import { useWeb3React } from "@web3-react/core"
 import axios from "axios"
 import Spacer from "./Spacer"
@@ -11,14 +11,20 @@ const client = axios.create({
 
 export default function Proposals() {
   const [nft, setNft] = useState(null)
+  //const [bids, setBids] = useState(null)
+  const [setShowModal] = useState(false)
+  const [setAsset] = useState(null)
+  const [setError] = useState("")
   const { account, active } = useWeb3React()
 
   useEffect(async () => {
     if (active) {
       try {
+        // Get proposals
         const proposalsCount = parseInt(await callGetProposalsCount(), 16)
         const proposals = await callGetProposals(proposalsCount)
         let tokenIds = []
+        // have to change probably, because proposalsCount should be the number of ALL proposals in the contract
         for (let i = 0; i < proposalsCount - 1; i++) {
           tokenIds.push(parseInt(proposals[i].tokenId._hex, 16))
         }
@@ -30,12 +36,31 @@ export default function Proposals() {
             listedProposals.push(token)
           }
         })
+        console.log(listedProposals)
         setNft(listedProposals)
+
+        // Get bids relative to proposals published
+        //const bidsCount = parseInt(await callBidsCount(), 16)
+        let bids = {}
+        for (let p in listedProposals) {
+          bids[p.id] = await callGetBidsFromProposal(p.id)
+        }
+        console.log(bids)
+        //setBids(bids)
       } catch (err) {
         console.log(err)
       }
     }
   }, [account])
+
+  const handleCardClick = useCallback(
+    (asset) => () => {
+      setError("")
+      setShowModal(true)
+      setAsset(asset)
+    },
+    []
+  )
 
   if (!active) {
     return (
@@ -49,22 +74,27 @@ export default function Proposals() {
 
   return (
     <div className="container mx-auto">
+      <h1 className="text-xl font-bold basis-full justify-center">
+        Your proposals
+      </h1>
       <Spacer space={32} />
       <div className="container grid gap-5 grid-cols-4">
         {!nft && <div>Loading...</div>}
-        {nft &&
-          nft.length ?
-          nft.map((asset, index) => {
+        {nft && !nft.length && <div>No proposal found</div>}
+        {nft && nft.length
+          ? nft.map((asset, index) => {
             return (
-              <Card
-                key={index}
-                title={asset.name}
-                description={asset.description}
-                image={asset.image_url}
-                link={asset.permalink}
-              />
+              <button key={index} onClick={handleCardClick(asset)}>
+                <Card
+                  title={asset.name}
+                  description={asset.description}
+                  image={asset.image_url}
+                  link={asset.permalink}
+                />
+              </button>
             )
-          }) : null}
+          })
+          : null}
       </div>
     </div>
   )
