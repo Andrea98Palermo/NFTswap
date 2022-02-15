@@ -123,6 +123,8 @@ export default function Upload() {
       setApproved(true)
       notify(Ok, "NFT Approved!")
     } catch (error) {
+      setLoading(false)
+      setApproved(false)
       notify(Error, "Error in NTF approval")
       setError(error.message)
     }
