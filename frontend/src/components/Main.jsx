@@ -3,7 +3,7 @@ import Spacer from "./Spacer"
 import Card from "./Card"
 import CardInfo from "./CardInfo"
 import { useWeb3React } from "@web3-react/core"
-import { callGetProposals, callGetProposalsCount, callMakeBid } from "../utils/blockchain"
+import { callGetAllProposals, callGetProposalsCount, callMakeBid } from "../utils/blockchain"
 import { useState, useEffect, useCallback, useReducer } from "react"
 import axios from "axios"
 
@@ -44,7 +44,7 @@ function Main() {
     if (active) {
       try {
         const proposalsCount = await callGetProposalsCount()
-        const proposals = await callGetProposals(proposalsCount)
+        const proposals = await callGetAllProposals(proposalsCount)
         const result = proposals.filter(
           (proposal) =>
             proposal.proposer !== "0x0000000000000000000000000000000000000000"
