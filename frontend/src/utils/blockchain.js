@@ -144,3 +144,54 @@ export const callGetApproved = async (
     throw error
   }
 }
+
+// TODO: Test it
+export const callBidsCount = async () => {
+  try {
+    const { myContract } = await initContractCall()
+    const bidsCount = myContract.bidsCount()
+    return bidsCount
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+// TODO: Test it
+export const callGetBidFromProposal = async (proposalId = 0, index = 0) => {
+  try {
+    const { myContract } = await initContractCall()
+    const bidsCount = await callBidsCount()
+    let bids = []
+    for (let i = 0; i < bidsCount; i++) {
+      let b = await myContract.bidsCount(proposalId, index)
+      bids.push(b)
+    }
+    return bids
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export const callGetBidsFromProposal = async (proposalId = 0) => {
+  try {
+    const { myContract } = await initContractCall()
+    let bids = await myContract.getBidsFromProposal(proposalId)
+    return bids
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export const callBids = async (bidId = 0) => {
+  try {
+    const { myContract } = await initContractCall()
+    let bid = await myContract.bids(bidId)
+    return bid
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
