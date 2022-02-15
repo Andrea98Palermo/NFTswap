@@ -137,7 +137,6 @@ export const callGetBidFromProposal = async (proposalId = 0, index = 0) => {
       let b = await myContract.bidsCount(proposalId, index)
       bids.push(b)
     }
-    console.log(bids)
     return bids
   } catch (err) {
     console.log(err)
@@ -145,12 +144,10 @@ export const callGetBidFromProposal = async (proposalId = 0, index = 0) => {
   }
 }
 
-// TODO: Test it
 export const callGetBidsFromProposal = async (proposalId = 0) => {
   try {
     const { myContract } = await initContractCall()
     let bids = await myContract.getBidsFromProposal(proposalId)
-    console.log(bids)
     return bids
   } catch (err) {
     console.log(err)
@@ -162,7 +159,6 @@ export const callBids = async (bidId = 0) => {
   try {
     const { myContract } = await initContractCall()
     let bid = await myContract.bids(bidId)
-    console.log(bid)
     return bid
   } catch (err) {
     console.log(err)
