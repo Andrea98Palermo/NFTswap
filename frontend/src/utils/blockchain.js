@@ -16,9 +16,9 @@ const initContractCall = async () => {
       const provider = new ethers.providers.Web3Provider(ethereum)
       if (window.location.href.includes("vercel")) {
         const { chainId } = await provider.getNetwork()
-        if (chainId != "80001") {
-          alert("Please switch to the Polygon Mumbai Testnet")
-          throw Error("Please switch to the Polygon Mumbai Testnet")
+        if (chainId != "4") {
+          alert("Please switch to the Ethereum Rinkeby Testnet")
+          throw Error("Please switch to the Ethereum Rinkeby Testnet")
         }
       }
       const signer = provider.getSigner()
@@ -84,7 +84,7 @@ export const callGetAllProposals = async (index = 0) => {
   try {
     const { myContract } = await initContractCall()
     var proposals = []
-    for (var i = 0; i < index; i++) {
+    for (var i = 1; i < index - 1; i++) {
       var p = await myContract.proposals(i)
       proposals.push(p)
     }
