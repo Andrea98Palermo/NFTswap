@@ -1,4 +1,5 @@
 import Card from "../components/Card"
+import CardInfo from "../components/CardInfo"
 import Spacer from "../components/Spacer"
 import axios from "axios"
 import { useState, useEffect, useReducer, useCallback } from "react"
@@ -166,14 +167,20 @@ export default function Upload() {
                     </button>
                   </div>
                   {/*body*/}
-                  <div className="relative p-6 flex-auto">
+                  <div className="relative p-8">
                     <Card
                       title={asset.name}
                       description={asset.description}
                       image={asset.image_url}
                       link={asset.permalink}
                     />
+                    <CardInfo
+                      contractAddress={asset.asset_contract.address}
+                      tokenId={asset.token_id}
+                      tokenType={asset.asset_contract.schema_name}
+                    />
                   </div>
+
                   {/*footer*/}
                   <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                     <button
