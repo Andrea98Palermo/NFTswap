@@ -84,7 +84,7 @@ export const callGetAllProposals = async (index = 0) => {
   try {
     const { myContract } = await initContractCall()
     var proposals = []
-    for (var i = 1; i < index - 1; i++) {
+    for (var i = 1; i < index; i++) {
       var p = await myContract.proposals(i)
       proposals.push(p)
     }
