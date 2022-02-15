@@ -1,4 +1,4 @@
-import { ethers } from "ethers"
+import { ethers, BigNumber } from "ethers"
 import contract from "../contracts/contract-abi.json"
 
 // Mumbai testnet
@@ -52,11 +52,12 @@ export const callMakeProposal = async (nftAddress = "", tokenId = 0) => {
 
 // TODO: Test the usage of this function
 // TODO: Add parameters "type" to the function
-export const callMakeBid = async (proposalId, bidNftAddress, bidNftTokenId) => {
+export const callMakeBid = async (proposal = "", bidNftAddress = "", bidNftToken= "") => {
   try {
-    const { myContract, caller_address } = initContractCall()
+    const { myContract } = await initContractCall()
+    const proposalId = BigNumber.from(proposal)
+    const bidNftTokenId = BigNumber.from(bidNftToken)
     await myContract.makeBid(
-      caller_address,
       proposalId,
       bidNftAddress,
       bidNftTokenId
