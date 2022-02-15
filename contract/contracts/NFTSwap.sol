@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
@@ -18,7 +17,6 @@ struct Proposal {
     uint256 proposalId;
     uint256[] bidsRef;
 }
-
 
 contract NFTSwap {    
     
@@ -40,7 +38,6 @@ contract NFTSwap {
 
         address proposer = msg.sender;
         //require(nftAddress.ownerOf(tokenId) == proposer, "You do not own the specified nft");
-        
         //require( proposalsCount <= 255 || proposalsGaps.length > 0, "You have too many proposals, delete one before");
 
         uint256 index;
@@ -63,11 +60,11 @@ contract NFTSwap {
     //quando un utente vuole proporre una bid il front end deve chiamare prima l'approve dell'nft verso il contratto e poi questa funzione
     function makeBid(uint256 proposalId, IERC721 bidNftAddress, uint256 bidNftTokenId) external {
         
-        require(bidNftAddress.getApproved(bidNftTokenId) == address(this), "You have to approve the token you want to swap to this contract");
+        //require(bidNftAddress.getApproved(bidNftTokenId) == address(this), "You have to approve the token you want to swap to this contract");
         require( proposals[proposalId].nftAddress != IERC721(address(0x0)), "Specified proposal does not exist" );
         
         address bidder = msg.sender;
-        require(bidNftAddress.ownerOf(bidNftTokenId) == bidder, "You do not own the specified nft");
+        //require(bidNftAddress.ownerOf(bidNftTokenId) == bidder, "You do not own the specified nft");
         //require(bidsGaps.length > 0 || bidsCount <= 255, "You have too many bids, delete one before");
 
         Bid memory bid;
