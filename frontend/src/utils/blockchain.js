@@ -1,10 +1,12 @@
 import { ethers, BigNumber } from "ethers"
 import contract from "../contracts/contract-abi.json"
+import nftContract from "../contracts/erc721-abi.json"
 
-const CONTRACT_ADDRESS = "0x8db3E66F8b65afFa37fA156E2B4084e604D77822"
+const CONTRACT_ADDRESS = "0x23ece8Da94dFA06eE85eb136C3E72f9370115fAe"
 
 const contractAddress = CONTRACT_ADDRESS
 const contractABI = contract.abi
+const nftABI = nftContract.abi
 
 const initContractCall = async () => {
   try {
@@ -42,25 +44,25 @@ const initContractCall = async () => {
 export const callMakeProposal = async (nftAddress = "", tokenId = 0) => {
   try {
     const { myContract } = await initContractCall()
-    await myContract.makeProposal(nftAddress, tokenId)
+    const result = await myContract.makeProposal(nftAddress, tokenId)
+    const receipt = await result.wait()
+    return receipt
   } catch (error) {
     console.error(error)
     throw error
   }
 }
 
-// TODO: Test the usage of this function
-// TODO: Add parameters "type" to the function
-export const callMakeBid = async (proposal = "", bidNftAddress = "", bidNftToken= "") => {
+export const callMakeBid = async (
+  proposal = "",
+  bidNftAddress = "",
+  bidNftToken = ""
+) => {
   try {
     const { myContract } = await initContractCall()
     const proposalId = BigNumber.from(proposal)
     const bidNftTokenId = BigNumber.from(bidNftToken)
-    await myContract.makeBid(
-      proposalId,
-      bidNftAddress,
-      bidNftTokenId
-    )
+    await myContract.makeBid(proposalId, bidNftAddress, bidNftTokenId)
   } catch (error) {
     console.error(error)
     throw error
@@ -101,67 +103,44 @@ export const callGetProposals = async (index = 0) => {
       let p = await myContract.proposals(i)
       allProposals.push(p)
     }
-    let proposals = []
-    allProposals.map((token) => {
-      if (token.proposer == caller_address) {
-        proposals.push(token)
-      }
-    })
-    console.log(proposals)
-    return proposals
+    const result = allProposals.filter((p) => p.proposer === caller_address)
+    return result
   } catch (error) {
     console.error(error)
     throw error
   }
 }
 
-// TODO: Test it
-export const callBidsCount = async () => {
+export const callApprove = async (nftContractAddress = "", tokenId = "") => {
   try {
-    const { myContract } = await initContractCall()
-    const bidsCount = myContract.bidsCount()
-    return bidsCount
-  } catch (err) {
-    console.log(err)
-    throw err
+    const { ethereum } = window
+    const provider = new ethers.providers.Web3Provider(ethereum)
+    const nftTokenId = BigNumber.from(tokenId)
+    const signer = provider.getSigner()
+    const nftContract = new ethers.Contract(nftContractAddress, nftABI, signer)
+    const result = await nftContract.approve(CONTRACT_ADDRESS, nftTokenId)
+    const receipt = await result.wait()
+    return receipt
+  } catch (error) {
+    console.error(error)
+    throw error
   }
 }
 
-// TODO: Test it
-export const callGetBidFromProposal = async (proposalId = 0, index = 0) => {
+export const callGetApproved = async (
+  nftContractAddress = "",
+  tokenId = ""
+) => {
   try {
-    const { myContract } = await initContractCall()
-    const bidsCount = await callBidsCount()
-    let bids = []
-    for (let i = 0; i < bidsCount; i++) {
-      let b = await myContract.bidsCount(proposalId, index)
-      bids.push(b)
-    }
-    return bids
-  } catch (err) {
-    console.log(err)
-    throw err
-  }
-}
-
-export const callGetBidsFromProposal = async (proposalId = 0) => {
-  try {
-    const { myContract } = await initContractCall()
-    let bids = await myContract.getBidsFromProposal(proposalId)
-    return bids
-  } catch (err) {
-    console.log(err)
-    throw err
-  }
-}
-
-export const callBids = async (bidId = 0) => {
-  try {
-    const { myContract } = await initContractCall()
-    let bid = await myContract.bids(bidId)
-    return bid
-  } catch (err) {
-    console.log(err)
-    throw err
+    const { ethereum } = window
+    const provider = new ethers.providers.Web3Provider(ethereum)
+    const nftTokenId = BigNumber.from(tokenId)
+    const signer = provider.getSigner()
+    const nftContract = new ethers.Contract(nftContractAddress, nftABI, signer)
+    const result = await nftContract.getApproved(nftTokenId)
+    return result === CONTRACT_ADDRESS
+  } catch (error) {
+    console.error(error)
+    throw error
   }
 }
