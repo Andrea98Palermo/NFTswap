@@ -1,11 +1,14 @@
-/* eslint-disable no-unused-vars */
 import Spacer from "./Spacer"
 import Card from "./Card"
 import CardInfo from "./CardInfo"
 import { useWeb3React } from "@web3-react/core"
-import { callGetAllProposals, callGetProposalsCount, callMakeBid } from "../utils/blockchain"
+import {
+  callGetAllProposals,
+  callGetProposalsCount,
+  callMakeBid,
+} from "../utils/blockchain"
 import { useState, useEffect, useCallback, useReducer } from "react"
-import axios from "axios"
+import { sanityclient } from "../utils/sanity"
 
 const initialFormData = {
   nftaddress: "",
@@ -21,13 +24,6 @@ const formReducer = (state, event) => {
     [event.name]: event.value,
   }
 }
-
-const apiKey = process.env.REACT_APP_ALCHEMY_API_KEY || "demo"
-const baseURL = `https://eth-mainnet.g.alchemy.com/v2/${apiKey}/getNFTMetadata`
-
-const client = axios.create({
-  baseURL: baseURL,
-})
 
 function Main() {
   const { account, active } = useWeb3React()
@@ -51,29 +47,26 @@ function Main() {
         )
         let localNFT = []
         for (let proposal of result) {
-          localNFT.push([proposal.nftAddress, proposal.tokenId.toString(), proposal.proposalId.toString()])
+          localNFT.push([
+            proposal.nftAddress,
+            proposal.tokenId.toString(),
+            proposal.proposalId.toString(),
+          ])
         }
-        let promises = []
         let globalNFT = []
         for (let nft of localNFT) {
-          promises.push(
-            client
-              .get(`?contractAddress=${nft[0]}&tokenId=${nft[1]}`)
-              // TODO: Check if there is (spoiler: there is) a better way to async add to the `nft` state
-              // and async render also the `Card` component
-              // Up to now the requests are mode in parallel, but we wait for all of them to finish to set the `nft` state
-              // and render the `Card` component
-              .then((response) => {
-                const { data } = response
-                const result = {...data, proposalId: nft[2]}
-                globalNFT.push(result)
-              })
-          )
+          const query = `*[_type == 'nfts' && _id == "${nft[0].toLowerCase()}-${
+            nft[1]
+          }"][0]`
+          const collectionData = await sanityclient.fetch(query)
+          const result = { ...collectionData, proposalId: nft[2] }
+          globalNFT.push(result)
         }
-        Promise.all(promises).then(() => setNft(globalNFT), setLoading(false))
+        setNft(globalNFT)
+        setLoading(false)
       } catch (err) {
         setLoading(false)
-        console.log(err)
+        console.error(err)
       }
     }
   }, [account])
@@ -83,7 +76,6 @@ function Main() {
       setProposalId(asset.proposalId)
       setError("")
       setShowModal(true)
-      console.log(asset)
       setAsset(asset)
     },
     []
@@ -98,7 +90,6 @@ function Main() {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault()
-    console.log("Call Make Bid with", proposalId, formData.nftaddress, formData.tokenid)
     await callMakeBid(proposalId, formData.nftaddress, formData.tokenid)
     dispatchFormData({ reset: true })
   }
@@ -136,7 +127,7 @@ function Main() {
                   <Card
                     title={asset.title}
                     description={asset.description}
-                    image={asset.metadata.image}
+                    image={asset.imageUrl}
                   />
                 </button>
               )
@@ -211,13 +202,13 @@ function Main() {
                           type="button"
                           onClick={() => setShowModal(false)}
                         >
-                      Close
+                          Close
                         </button>
                         <button
                           className="bg-amber-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                           type="submit"
                         >
-                      Bid
+                          Bid
                         </button>
                         {error ? (
                           <div>
@@ -227,7 +218,6 @@ function Main() {
                       </div>
                     </form>
                   </div>
-
                 </div>
               </div>
             </div>
