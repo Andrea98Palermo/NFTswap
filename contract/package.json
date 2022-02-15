@@ -24,6 +24,7 @@
   "scripts": {
     "deploy": "hardhat run scripts/deploy.js --network localhost",
     "compile": "hardhat compile",
-    "deploy:testnet": "hardhat run scripts/deploy.js --network mumbai"
+    "deploy:testnet": "hardhat run scripts/deploy.js --network mumbai",
+    "deploy:rinkeby": "hardhat run scripts/deploy.js --network rinkeby"
   }
 }
