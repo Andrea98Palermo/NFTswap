@@ -1,7 +1,7 @@
 import { ethers, BigNumber } from "ethers"
 import contract from "../contracts/contract-abi.json"
 
-const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+const CONTRACT_ADDRESS = "0x8db3E66F8b65afFa37fA156E2B4084e604D77822"
 
 const contractAddress = CONTRACT_ADDRESS
 const contractABI = contract.abi
@@ -96,16 +96,72 @@ export const callGetAllProposals = async (index = 0) => {
 export const callGetProposals = async (index = 0) => {
   try {
     const { myContract, caller_address } = await initContractCall()
-    var proposals = []
-    for (var i = 0; i < index; i++) {
-      var p = await myContract.proposals(i)
-      proposals.push(p)
+    let allProposals = []
+    for (let i = 0; i < index; i++) {
+      let p = await myContract.proposals(i)
+      allProposals.push(p)
     }
-    const result = proposals.filter(p => p.proposer === caller_address)
-    // TODO: Render the proposals to the UI
-    return result
+    let proposals = []
+    allProposals.map((token) => {
+      if (token.proposer == caller_address) {
+        proposals.push(token)
+      }
+    })
+    console.log(proposals)
+    return proposals
   } catch (error) {
     console.error(error)
     throw error
+  }
+}
+
+// TODO: Test it
+export const callBidsCount = async () => {
+  try {
+    const { myContract } = await initContractCall()
+    const bidsCount = myContract.bidsCount()
+    return bidsCount
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+// TODO: Test it
+export const callGetBidFromProposal = async (proposalId = 0, index = 0) => {
+  try {
+    const { myContract } = await initContractCall()
+    const bidsCount = await callBidsCount()
+    let bids = []
+    for (let i = 0; i < bidsCount; i++) {
+      let b = await myContract.bidsCount(proposalId, index)
+      bids.push(b)
+    }
+    return bids
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export const callGetBidsFromProposal = async (proposalId = 0) => {
+  try {
+    const { myContract } = await initContractCall()
+    let bids = await myContract.getBidsFromProposal(proposalId)
+    return bids
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export const callBids = async (bidId = 0) => {
+  try {
+    const { myContract } = await initContractCall()
+    let bid = await myContract.bids(bidId)
+    return bid
+  } catch (err) {
+    console.log(err)
+    throw err
   }
 }
