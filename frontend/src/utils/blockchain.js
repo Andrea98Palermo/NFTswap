@@ -1,7 +1,7 @@
 import { ethers, BigNumber } from "ethers"
 import contract from "../contracts/contract-abi.json"
 
-const CONTRACT_ADDRESS = "0xe777D31b07aC1c48CBaB1d4ed4d88D74B595Af6F"
+const CONTRACT_ADDRESS = "0x8db3E66F8b65afFa37fA156E2B4084e604D77822"
 
 const contractAddress = CONTRACT_ADDRESS
 const contractABI = contract.abi
@@ -152,6 +152,18 @@ export const callGetBidsFromProposal = async (proposalId = 0) => {
     let bids = await myContract.getBidsFromProposal(proposalId)
     console.log(bids)
     return bids
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export const callBids = async (bidId = 0) => {
+  try {
+    const { myContract } = await initContractCall()
+    let bid = await myContract.bids(bidId)
+    console.log(bid)
+    return bid
   } catch (err) {
     console.log(err)
     throw err
