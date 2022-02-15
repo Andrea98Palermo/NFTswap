@@ -62,7 +62,9 @@ export const callMakeBid = async (
     const { myContract } = await initContractCall()
     const proposalId = BigNumber.from(proposal)
     const bidNftTokenId = BigNumber.from(bidNftToken)
-    await myContract.makeBid(proposalId, bidNftAddress, bidNftTokenId)
+    const result = await myContract.makeBid(proposalId, bidNftAddress, bidNftTokenId)
+    const receipt = await result.wait()
+    return receipt
   } catch (error) {
     console.error(error)
     throw error
