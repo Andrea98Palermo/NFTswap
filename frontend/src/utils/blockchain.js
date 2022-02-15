@@ -16,8 +16,7 @@ const initContractCall = async () => {
         const { chainId } = await provider.getNetwork()
         if (chainId != "80001") {
           alert("Please switch to the Polygon Mumbai Testnet")
-          // TODO: Stop the actual call to the contract
-          return
+          throw Error("Please switch to the Polygon Mumbai Testnet")
         }
       }
       const signer = provider.getSigner()

@@ -55,6 +55,7 @@ function Main() {
         }
         Promise.all(promises).then(() => setNft(globalNFT), setLoading(false))
       } catch (err) {
+        setLoading(false)
         console.log(err)
       }
     }
