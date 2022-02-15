@@ -2,7 +2,7 @@ import { ethers } from "ethers"
 import contract from "../contracts/contract-abi.json"
 
 // Mumbai testnet
-const CONTRACT_ADDRESS = "0x3a8b0D1E4051f57f68C177487796996A23893921"
+const CONTRACT_ADDRESS = "0x7e883Dad2a71379Cc2Cd36e14F25B6698a0AEd01"
 
 const contractAddress = CONTRACT_ADDRESS
 const contractABI = contract.abi
