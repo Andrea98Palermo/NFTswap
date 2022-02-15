@@ -4,16 +4,34 @@ import Spacer from "../components/Spacer"
 import axios from "axios"
 import { useState, useEffect, useReducer, useCallback } from "react"
 import { useWeb3React } from "@web3-react/core"
-import { callMakeProposal } from "../utils/blockchain"
+import {
+  callMakeProposal,
+  callApprove,
+  callGetApproved,
+} from "../utils/blockchain"
+import toast, { Toaster } from "react-hot-toast"
 
-// TODO: Chech if Alchemy's API are faster than Opensea's
 const client = axios.create({
-  baseURL: "https://api.opensea.io/api/v1/",
+  baseURL: "https://rinkeby-api.opensea.io/api/v1/",
 })
+
+const Ok = 0
+const Error = 1
 
 const initialFormData = {
   nftaddress: "",
   tokenid: "",
+}
+
+const notify = (status, message) => {
+  switch(status){
+  case Ok:
+    toast.success(message)
+    break
+  case Error:
+    toast.error(message)
+    break
+  }
 }
 
 const formReducer = (state, event) => {
@@ -35,6 +53,8 @@ export default function Upload() {
   const [formData, dispatchFormData] = useReducer(formReducer, initialFormData)
   const [asset, setAsset] = useState(null)
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [approved, setApproved] = useState(false)
 
   useEffect(async () => {
     if (active) {
@@ -55,10 +75,12 @@ export default function Upload() {
   }
 
   const handleCardClick = useCallback(
-    (asset) => () => {
+    (asset) => async () => {
       setError("")
       setShowModal(true)
       setAsset(asset)
+      const approvedStatus = await callGetApproved(asset.asset_contract.address, asset.token_id)
+      setApproved(approvedStatus)
     },
     []
   )
@@ -71,6 +93,22 @@ export default function Upload() {
       await callMakeProposal(asset.asset_contract.address, asset.id)
       setShowModal(false)
     } catch (error) {
+      setLoading(false)
+      notify(Error, "Error in proposal creation")
+      setError(error.message)
+    }
+  }
+
+  const handleCardApprove = async (event) => {
+    event.preventDefault()
+    try {
+      setLoading(true)
+      await callApprove(asset.asset_contract.address, asset.token_id)
+      setLoading(false)
+      setApproved(true)
+      notify(Ok, "NFT Approved!")
+    } catch (error) {
+      notify(Error, "Error in NTF approval")
       setError(error.message)
     }
   }
@@ -80,6 +118,16 @@ export default function Upload() {
       name: event.target.name,
       value: event.target.value,
     })
+  }
+
+  if (!window.ethereum) {
+    return (
+      <div className="container mx-auto">
+        <h2 className="text-xl font-bold basis-full justify-center">
+          Install MetaMask
+        </h2>
+      </div>
+    )
   }
 
   if (!active) {
@@ -149,6 +197,7 @@ export default function Upload() {
             )
           })
           : null}
+        <Toaster />
         {showModal ? (
           <>
             <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -181,23 +230,57 @@ export default function Upload() {
                       tokenType={asset.asset_contract.schema_name}
                     />
                   </div>
-
                   {/*footer*/}
                   <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                     <button
-                      className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      className="text-red-500 background-transparent font-bold px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                       type="button"
                       onClick={() => setShowModal(false)}
                     >
                       Close
                     </button>
-                    <button
-                      className="bg-amber-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      type="button"
-                      onClick={handleCardSubmit}
-                    >
-                      Propose
-                    </button>
+
+                    {!approved ? (
+                      <>
+                        {!loading ? (
+                          <button
+                            className="bg-amber-500 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            onClick={handleCardApprove}
+                          >
+                          Approve
+                          </button>
+                        ) : (
+                          <button type="button" className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-amber-500 hover:bg-amber-400 transition ease-in-out duration-150 cursor-not-allowed" disabled>
+                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        Processing...
+                          </button>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {!loading ? (
+                          <button
+                            className="bg-amber-500 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            onClick={handleCardSubmit}
+                          >
+                          Propose
+                          </button>
+                        ) : (
+                          <button type="button" className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-amber-500 hover:bg-amber-400 transition ease-in-out duration-150 cursor-not-allowed" disabled>
+                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        Processing...
+                          </button>
+                        )}
+                      </>
+                    )}
                     {error ? (
                       <div>
                         <p>{error}</p>
