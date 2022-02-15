@@ -23,6 +23,7 @@ function Main() {
   const { account, active } = useWeb3React()
   //const [proposals, setProposals] = useState(defaultProposal)
   const [nft, setNft] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(async () => {
     if (active) {
@@ -52,7 +53,7 @@ function Main() {
               })
           )
         }
-        Promise.all(promises).then(() => setNft(globalNFT))
+        Promise.all(promises).then(() => setNft(globalNFT), setLoading(false))
       } catch (err) {
         console.log(err)
       }
@@ -94,30 +95,29 @@ function Main() {
     <div className="container mx-auto">
       <h2 className="text-xl font-bold basis-full justify-center">Home Page</h2>
       <Spacer space={32} />
-
-      {active ? (
-        <>
-          <div className="flex flex-wrap justify-center items-start">
-            {nft && nft.length ? (
-              nft.map((asset, index) => {
-                return (
-                  <button key={index}>
-                    <Card
-                      title={asset.title}
-                      description={asset.description}
-                      image={asset.metadata.image}
-                    />
-                  </button>
-                )
-              })
-            ) : (
-              <></>
-            )}
-          </div>
-        </>
-      ) : (
-        <p />
-      )}
+      <div className="flex flex-wrap justify-center items-start">
+        {!loading ? (
+          nft.length > 0 ? (
+            nft.map((asset, index) => {
+              return (
+                <button key={index}>
+                  <Card
+                    title={asset.title}
+                    description={asset.description}
+                    image={asset.metadata.image}
+                  />
+                </button>
+              )
+            })
+          ) : (
+            <p>No proposals in the contract</p>
+          )
+        ) : (
+          <>
+            <p>Retrieving proposals</p>
+          </>
+        )}
+      </div>
     </div>
   )
 }
