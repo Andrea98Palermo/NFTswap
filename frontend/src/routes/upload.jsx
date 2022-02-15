@@ -61,7 +61,6 @@ export default function Upload() {
     if (active) {
       try {
         const response = await client.get("assets?owner=" + account)
-        console.log(response.data)
         setNft(response.data)
       } catch (error) {
         alert(error)

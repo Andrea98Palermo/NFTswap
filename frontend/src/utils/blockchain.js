@@ -2,7 +2,7 @@ import { ethers, BigNumber } from "ethers"
 import contract from "../contracts/contract-abi.json"
 import nftContract from "../contracts/erc721-abi.json"
 
-const CONTRACT_ADDRESS = "0x23ece8Da94dFA06eE85eb136C3E72f9370115fAe"
+const CONTRACT_ADDRESS = "0x0D6A9e9B45569C816EB994e1b0685cfc728D4E49"
 
 const contractAddress = CONTRACT_ADDRESS
 const contractABI = contract.abi
