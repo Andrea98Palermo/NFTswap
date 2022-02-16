@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 //represents a bid made for a proposal
 struct Bid {
     address bidder;
+    uint256 bidId;
     uint256 proposalRef; //identifier of relative proposal
     IERC721 nftAddress; //bidded nft's contract address
     uint256 tokenId; //bidded nft's contract address
@@ -137,6 +138,8 @@ contract NFTSwap {
             bidsCount += 1;
         }
 
+        bid.bidId = index;
+
         proposals[proposalId].bidsRef.push(index);
         bids[index] = bid;
     }
@@ -244,7 +247,7 @@ contract NFTSwap {
 
     //retrieves all bids mad for a proposal
     function getBidsFromProposal(uint256 proposalId)
-        public
+        external
         view
         needsExistentProposal(proposalId)
         returns (uint256[] memory bidsRef)
@@ -254,7 +257,7 @@ contract NFTSwap {
 
     //retrieves a specific bid made for a proposal
     function getBidFromProposal(uint8 proposalId, uint256 index)
-        public
+        external
         view
         needsExistentProposal(proposalId)
         returns (uint256 bidRef)
