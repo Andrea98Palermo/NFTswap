@@ -1,17 +1,44 @@
+// Our components
 import Card from "../components/Card"
+import CardInfo from "../components/CardInfo"
 import Spacer from "../components/Spacer"
+import ProcessingButton from "../components/ProcessingButton"
+
+// Utility
+import { sanityclient } from "../utils/sanity"
+import {
+  callMakeProposal,
+  callApprove,
+  callGetApproved,
+} from "../utils/blockchain"
+
+// Extrernal libraries
 import axios from "axios"
 import { useState, useEffect, useReducer, useCallback } from "react"
 import { useWeb3React } from "@web3-react/core"
-import { callMakeProposal } from "../utils/blockchain"
+import toast, { Toaster } from "react-hot-toast"
 
 const client = axios.create({
-  baseURL: "https://api.opensea.io/api/v1/",
+  baseURL: "https://rinkeby-api.opensea.io/api/v1/"
 })
+
+const Ok = 0
+const Error = 1
 
 const initialFormData = {
   nftaddress: "",
   tokenid: "",
+}
+
+const notify = (status, message) => {
+  switch (status) {
+  case Ok:
+    toast.success(message)
+    break
+  case Error:
+    toast.error(message)
+    break
+  }
 }
 
 const formReducer = (state, event) => {
@@ -33,6 +60,8 @@ export default function Upload() {
   const [formData, dispatchFormData] = useReducer(formReducer, initialFormData)
   const [asset, setAsset] = useState(null)
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [approved, setApproved] = useState(false)
 
   useEffect(async () => {
     if (active) {
@@ -52,22 +81,57 @@ export default function Upload() {
   }
 
   const handleCardClick = useCallback(
-    (asset) => () => {
+    (asset) => async () => {
       setError("")
       setShowModal(true)
       setAsset(asset)
+      const approvedStatus = await callGetApproved(
+        asset.asset_contract.address,
+        asset.token_id
+      )
+      setApproved(approvedStatus)
     },
     []
   )
 
   const handleCardSubmit = async (event) => {
     event.preventDefault()
-    console.log(asset.asset_contract.address)
-    console.log(asset.token_id)
     try {
+      setLoading(true)
       await callMakeProposal(asset.asset_contract.address, asset.token_id)
+      const nftDoc = {
+        _type: "nfts",
+        _id: `${asset.asset_contract.address}-${asset.token_id}`,
+        contractAddress: asset.asset_contract.address,
+        tokenId: asset.token_id,
+        imageUrl: asset.image_url,
+        title: asset.name,
+        description: asset.description,
+        ercType: asset.asset_contract.schema_name,
+      }
+      await sanityclient.createIfNotExists(nftDoc)
+      setLoading(false)
+      notify(Ok, "Proposal sent")
       setShowModal(false)
     } catch (error) {
+      setLoading(false)
+      notify(Error, "Error in proposal creation")
+      setError(error.message)
+    }
+  }
+
+  const handleCardApprove = async (event) => {
+    event.preventDefault()
+    try {
+      setLoading(true)
+      await callApprove(asset.asset_contract.address, asset.token_id)
+      setLoading(false)
+      setApproved(true)
+      notify(Ok, "NFT Approved!")
+    } catch (error) {
+      setLoading(false)
+      setApproved(false)
+      notify(Error, "Error in NTF approval")
       setError(error.message)
     }
   }
@@ -77,6 +141,16 @@ export default function Upload() {
       name: event.target.name,
       value: event.target.value,
     })
+  }
+
+  if (!window.ethereum) {
+    return (
+      <div className="container mx-auto">
+        <h2 className="text-xl font-bold basis-full justify-center">
+          Install MetaMask
+        </h2>
+      </div>
+    )
   }
 
   if (!active) {
@@ -134,18 +208,21 @@ export default function Upload() {
         {nft && !nft.assets.length && <div>No NFTs found</div>}
         {nft && nft.assets.length
           ? nft.assets.map((asset, index) => {
-            return (
-              <button key={index} onClick={handleCardClick(asset)}>
-                <Card
-                  title={asset.name}
-                  description={asset.description}
-                  image={asset.image_url}
-                  link={asset.permalink}
-                />
-              </button>
-            )
+            if(asset.name !== null && asset.description !== null) {
+              return (
+                <button key={index} onClick={handleCardClick(asset)}>
+                  <Card
+                    title={asset.name}
+                    description={asset.description}
+                    image={asset.image_url}
+                    link={asset.permalink}
+                  />
+                </button>
+              )
+            }
           })
           : null}
+        <Toaster />
         {showModal ? (
           <>
             <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -165,30 +242,58 @@ export default function Upload() {
                     </button>
                   </div>
                   {/*body*/}
-                  <div className="relative p-6 flex-auto">
+                  <div className="relative p-8">
                     <Card
                       title={asset.name}
                       description={asset.description}
                       image={asset.image_url}
                       link={asset.permalink}
                     />
+                    <CardInfo
+                      contractAddress={asset.asset_contract.address}
+                      tokenId={asset.token_id}
+                      tokenType={asset.asset_contract.schema_name}
+                    />
                   </div>
                   {/*footer*/}
                   <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                     <button
-                      className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      className="text-red-500 background-transparent font-bold px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                       type="button"
                       onClick={() => setShowModal(false)}
                     >
                       Close
                     </button>
-                    <button
-                      className="bg-amber-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      type="button"
-                      onClick={handleCardSubmit}
-                    >
-                      Propose
-                    </button>
+
+                    {!approved ? (
+                      <>
+                        {!loading ? (
+                          <button
+                            className="bg-amber-500 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            onClick={handleCardApprove}
+                          >
+                            Approve
+                          </button>
+                        ) : (
+                          <ProcessingButton />
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {!loading ? (
+                          <button
+                            className="bg-amber-500 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            onClick={handleCardSubmit}
+                          >
+                            Propose
+                          </button>
+                        ) : (
+                          <ProcessingButton />
+                        )}
+                      </>
+                    )}
                     {error ? (
                       <div>
                         <p>{error}</p>

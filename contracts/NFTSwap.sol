@@ -1,4 +1,5 @@
-pragma solidity >=0.4.22 <0.9.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
@@ -19,7 +20,6 @@ struct Proposal {
     uint256 proposalId;         //identifier of the proposal
     uint256[] bidsRef;          //list of bids made for the proposal
 }
-
 
 contract NFTSwap {    
 
@@ -188,6 +188,7 @@ contract NFTSwap {
         delete bids[bidId];
         bidsGaps.push(bidId);
     }
+<<<<<<< HEAD
     
     //retrieves all bids mad for a proposal
     function getBidsFromProposal(uint256 proposalId) public view needsExistentProposal(proposalId) returns (uint256[] memory bidsRef) {
@@ -196,6 +197,16 @@ contract NFTSwap {
 
     //retrieves a specific bid made for a proposal
     function getBidFromProposal(uint8 proposalId, uint256 index) public view needsExistentProposal(proposalId) returns (uint256 bidRef) {
+=======
+
+    function getBidsFromProposal(uint256 proposalId) external view returns (uint256[] memory bidsRef) {
+        require( proposals[proposalId].nftAddress != IERC721(address(0x0)), "Specified proposal does not exist" );
+        bidsRef = proposals[proposalId].bidsRef;
+    }
+
+    function getBidFromProposal(uint8 proposalId, uint256 index) external view returns (uint256 bidRef) {
+        require( proposals[proposalId].nftAddress != IERC721(address(0x0)), "Specified proposal does not exist" );
+>>>>>>> f8eb54b3d82b7662df4454aa57e87d11f9f67c00
         require( proposals[proposalId].bidsRef.length > index, "Specified bid does not exist" );
         bidRef = proposals[proposalId].bidsRef[index];
     }
