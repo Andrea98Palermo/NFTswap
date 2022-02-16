@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 //represents a bid made for a proposal
 struct Bid {
     address bidder;
+    uint256 bidId;
     uint256 proposalRef;        //identifier of relative proposal
     IERC721 nftAddress;         //bidded nft's contract address
     uint256 tokenId;            //bidded nft's contract address
@@ -113,6 +114,8 @@ contract NFTSwap {
             bidsCount+=1;
         }
         
+        bid.bidId = index;
+        
         proposals[proposalId].bidsRef.push(index);
         bids[index] = bid;
     }
@@ -190,12 +193,12 @@ contract NFTSwap {
     }
     
     //retrieves all bids mad for a proposal
-    function getBidsFromProposal(uint256 proposalId) public view needsExistentProposal(proposalId) returns (uint256[] memory bidsRef) {
+    function getBidsFromProposal(uint256 proposalId) external view needsExistentProposal(proposalId) returns (uint256[] memory bidsRef) {
         bidsRef = proposals[proposalId].bidsRef;
     }
 
     //retrieves a specific bid made for a proposal
-    function getBidFromProposal(uint8 proposalId, uint256 index) public view needsExistentProposal(proposalId) returns (uint256 bidRef) {
+    function getBidFromProposal(uint8 proposalId, uint256 index) external view needsExistentProposal(proposalId) returns (uint256 bidRef) {
         require( proposals[proposalId].bidsRef.length > index, "Specified bid does not exist" );
         bidRef = proposals[proposalId].bidsRef[index];
     }
