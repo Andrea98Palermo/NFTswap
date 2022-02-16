@@ -301,11 +301,7 @@
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {
-				"refuseBid(uint256,uint256)": {
-					"notice": "function acceptBid(uint8 proposalId, uint256 bidIndex) external { address proposerAddress = msg.sender; require( proposals[proposerAddress][proposalId].nftAddress != IERC721(address(0x0)), \"Specified proposal does not exist\" ); require( proposals[proposerAddress][proposalId].bidsRef[bidIndex].bidderAddress != address(0x0), \"Specified bid does not exist\" ); BidIdentifier memory bidIdentifier = proposals[proposerAddress][proposalId].bidsRef[bidIndex]; IERC721 nftAddress1 = proposals[proposerAddress][proposalId].nftAddress; uint256 tokenId1 = proposals[proposerAddress][proposalId].tokenId; IERC721 nftAddress2 = bids[bidIdentifier.bidderAddress][bidIdentifier.bidId].nftAddress; uint256 tokenId2 = bids[bidIdentifier.bidderAddress][bidIdentifier.bidId].tokenId; if(nftAddress1.ownerOf(tokenId1) != proposerAddress) { deleteProposal(proposerAddress, proposalId); revert(\"You do not own the nft anymore\"); } if(nftAddress1.getApproved(tokenId1) != address(this)) { deleteProposal(proposerAddress, proposalId); revert(\"You removed approval for the nft to this contract, please re-approve it\"); } address bidderAddress = bidIdentifier.bidderAddress; uint8 bidId = bidIdentifier.bidId; if(nftAddress2.ownerOf(tokenId2) != bidderAddress) { deleteBid(bidderAddress, bidId); revert(\"The bidder does not own the nft anymore\"); } if(nftAddress2.getApproved(tokenId2) != address(this)) { deleteBid(bidderAddress, bidId); revert(\"The bidder removed approval for the bidded nft to this contract. Impossible to complete the swap until the bidder re-approves the nft\"); } nftAddress1.safeTransferFrom(proposerAddress, bidIdentifier.bidderAddress, tokenId1); nftAddress2.safeTransferFrom(bidIdentifier.bidderAddress, proposerAddress, tokenId2); deleteProposal(proposerAddress, proposalId); }"
-				}
-			},
+			"methods": {},
 			"version": 1
 		}
 	},
@@ -342,10 +338,10 @@
 			]
 		},
 		"contracts/NFTSwap.sol": {
-			"keccak256": "0x10801c3d1fef99c7b4cb9fa5f35dcc150a022d899ce31eafb09d4fe5a4c64c75",
+			"keccak256": "0x0ed0830ee3e4f11589c156be427d357576b9a7f3abb8be369f75a28c69c2eb1a",
 			"urls": [
-				"bzz-raw://a44839d9f3c638b711c4cbb2dda132613ae302a9f91d254be1d3e9499b7fe19f",
-				"dweb:/ipfs/QmbbCdYmYg2xVNnki1txkJDgDTX8ynNs5xummL9w4oW7eD"
+				"bzz-raw://5d4d8923da4af9df62c1fd16acef20e598ea46fdd66ecb0b2e4c4f70ae4fd704",
+				"dweb:/ipfs/QmeUzAgG8fFeCPR55rKwH4AFNM6Gyp71zVQM7jrohTs5ZZ"
 			]
 		}
 	},
