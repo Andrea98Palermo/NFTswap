@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.9.0;
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
@@ -222,12 +222,12 @@ contract NFTSwap {
         bidsGaps.push(bidId);
     }
 
-    function getBidsFromProposal(uint256 proposalId) public view returns (uint256[] memory bidsRef) {
+    function getBidsFromProposal(uint256 proposalId) external view returns (uint256[] memory bidsRef) {
         require( proposals[proposalId].nftAddress != IERC721(address(0x0)), "Specified proposal does not exist" );
         bidsRef = proposals[proposalId].bidsRef;
     }
 
-    function getBidFromProposal(uint8 proposalId, uint256 index) public view returns (uint256 bidRef) {
+    function getBidFromProposal(uint8 proposalId, uint256 index) external view returns (uint256 bidRef) {
         require( proposals[proposalId].nftAddress != IERC721(address(0x0)), "Specified proposal does not exist" );
         require( proposals[proposalId].bidsRef.length > index, "Specified bid does not exist" );
         bidRef = proposals[proposalId].bidsRef[index];
