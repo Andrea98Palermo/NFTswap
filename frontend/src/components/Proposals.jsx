@@ -66,6 +66,7 @@ export default function Proposals() {
 
           for (let b in bidIds[proposalId]) {
             let bid = await callBids(bidIds[proposalId][b].toString())
+            console.log("Primo proposalId", proposalId)
 
             // Empty bid filter
             if (
@@ -114,7 +115,6 @@ export default function Proposals() {
     (index) => async () => {
       try {
         setLoading(true)
-        // TODO: Check arguments
         await callAcceptBid(
           asset.proposalId.toString(),
           bidsId[asset.proposalId][index].toString()
@@ -132,7 +132,6 @@ export default function Proposals() {
     (index) => async () => {
       try {
         setLoading(true)
-        // TODO: Check arguments
         await callRefuseBid(
           asset.proposalId.toString(),
           bidsId[asset.proposalId][index].toString()
@@ -150,9 +149,19 @@ export default function Proposals() {
   const handleDeleteBid = useCallback(
     (index) => async () => {
       try {
-        console.log(myBids)
-        // TODO: Check arguments
-        await callDeleteBid("BID ID")
+        //console.log("myBids", myBids)
+        const proposalID  = myBids[index].proposalRef
+        console.log("proposalID", proposalID)
+        //console.log("proposalRef", proposalID)
+        /*
+        bidder: "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199"
+        indexInProposal: BigNumber {_hex: '0x04', _isBigNumber: true}
+        nftAddress: "0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b"
+        proposalRef: BigNumber {_hex: '0x01', _isBigNumber: true}
+        tokenId: BigNumber {_hex: '0x01a689', _isBigNumber: true}
+        */
+        console.log(bidsId[proposalID])
+        //await callDeleteBid("BID ID")
       } catch (error) {
         console.error(error)
       }
