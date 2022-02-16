@@ -38,7 +38,7 @@
   "devDependencies": {
     "@craco/craco": "^6.4.3",
     "@swc/cli": "^0.1.55",
-    "@swc/core": "^1.2.140",
+    "@swc/core": "^1.2.141",
     "autoprefixer": "^10.4.2",
     "craco-swc": "^0.2.0",
     "eslint": "^8.9.0",
@@ -50,6 +50,6 @@
     "postcss": "^8.4.6",
     "react-scripts": "^5.0.0",
     "swc-loader": "^0.1.15",
-    "tailwindcss": "^3.0.22"
+    "tailwindcss": "^3.0.23"
   }
 }
