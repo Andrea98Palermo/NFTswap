@@ -209,7 +209,7 @@ export default function Upload() {
         {nft && !nft.assets.length && <div>No NFTs found</div>}
         {nft && nft.assets.length
           ? nft.assets.map((asset, index) => {
-            if(asset.name !== null && asset.description !== null) {
+            if(asset.name !== null && asset.description !== null && asset.image_url !== null) {
               return (
                 <button key={index} onClick={handleCardClick(asset)}>
                   <Card

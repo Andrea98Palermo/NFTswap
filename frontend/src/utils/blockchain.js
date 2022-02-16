@@ -142,12 +142,10 @@ export const callGetApproved = async (
     const result = await nftContract.getApproved(nftTokenId)
     return result === CONTRACT_ADDRESS
   } catch (error) {
-    console.error(error)
-    throw error
+    return false
   }
 }
 
-// TODO: Test it
 export const callBidsCount = async () => {
   try {
     const { myContract } = await initContractCall()
@@ -197,3 +195,68 @@ export const callBids = async (bidId = 0) => {
     throw err
   }
 }
+
+export const callAcceptBid = async (proposalId = "", bidId = "") => {
+  try {
+    const { myContract } = await initContractCall()
+    const proposalIdNum = BigNumber.from(proposalId)
+    const bidIdNum = BigNumber.from(bidId)
+    let bid = await myContract.acceptBid(proposalIdNum, bidIdNum)
+    return bid
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export const callRefuseBid = async (proposalId = "", bidId = "") => {
+  try {
+    const { myContract } = await initContractCall()
+    const proposalIdNum = BigNumber.from(proposalId)
+    const bidIdNum = BigNumber.from(bidId)
+    let bid = await myContract.refuseBid(proposalIdNum, bidIdNum)
+    return bid
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export const callGetMyBids = async (index = 0) => {
+  try {
+    const { myContract, caller_address } = await initContractCall()
+    let allBids = []
+    for (let i = 1; i < index + 1; i++) {
+      let p = await myContract.bids(i)
+      allBids.push(p)
+    }
+    const result = allBids.filter((p) => p.bidder === caller_address)
+    return result
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const callDeleteBid = async (bidId = "") => {
+  try {
+    const { myContract } = await initContractCall()
+    const bidIdNum = BigNumber.from(bidId)
+    await myContract.deleteBid(bidIdNum)
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export const callDeleteProposal = async (proposalId = "") => {
+  try {
+    const { myContract } = await initContractCall()
+    const proposalIdNum = BigNumber.from(proposalId)
+    await myContract.deleteProposal(proposalIdNum)
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+

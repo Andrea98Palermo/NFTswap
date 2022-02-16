@@ -1,9 +1,16 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect, useCallback } from "react"
 import {
   callGetProposalsCount,
   callGetMyProposals,
   callGetBidsFromProposal,
   callBids,
+  callGetMyBids,
+  callBidsCount,
+  callAcceptBid,
+  callRefuseBid,
+  callDeleteBid,
+  callDeleteProposal
 } from "../utils/blockchain"
 import { useWeb3React } from "@web3-react/core"
 import Spacer from "./Spacer"
@@ -13,11 +20,15 @@ import CardInfo from "./CardInfo"
 
 export default function Proposals() {
   const [nft, setNft] = useState([])
+  const [myBids, setMyBids] = useState([])
   const [bids, setBids] = useState({})
+  const [bidsId, setBidsId] = useState({})
   const [showModal, setShowModal] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [bidLoading, setBidLoading] = useState(true)
   const [asset, setAsset] = useState(null)
   const [error, setError] = useState("")
+  const [proposalsId, setProposalsId] = useState([])
   const { account, active } = useWeb3React()
 
   useEffect(async () => {
@@ -37,6 +48,7 @@ export default function Proposals() {
           collectionData = { ...collectionData, proposalId }
           setNft((prevState) => [...prevState, collectionData])
         }
+        setProposalsId(proposalIds)
 
         let bidIds = {}
         let biddedNftsData = {}
@@ -46,7 +58,10 @@ export default function Proposals() {
           bidIds[proposalId] = await callGetBidsFromProposal(proposalId)
 
           for (let b in bidIds[proposalId]) {
-            bid = await callBids(parseInt(bidIds[proposalId][b].toString()))
+            bid = await callBids(bidIds[proposalId][b].toString())
+            if(bid.nftAddress.toLowerCase() === "0x0000000000000000000000000000000000000000") {
+              continue
+            }
             if (biddedNftsData[proposalId] === undefined) {
               biddedNftsData[proposalId] = []
               biddedNftsData[proposalId].push(bid)
@@ -55,6 +70,7 @@ export default function Proposals() {
             }
           }
         }
+        setBidsId(bidIds)
         setBids(biddedNftsData)
         setLoading(false)
       } catch (err) {
@@ -64,6 +80,16 @@ export default function Proposals() {
     }
   }, [account])
 
+  useEffect(async () => {
+    setMyBids([])
+    setBidLoading(true)
+    const bidsCount = await callBidsCount()
+    const myBids = await callGetMyBids(bidsCount.toString())
+    setBidLoading(false)
+    setMyBids(myBids)
+
+  }, [account])
+
   const handleCardClick = useCallback(
     (asset) => async () => {
       setShowModal(true)
@@ -71,6 +97,63 @@ export default function Proposals() {
     },
     []
   )
+
+  const handleAcceptBid = useCallback(
+    (index) => async () => {
+      try {
+        setLoading(true)
+        // TODO: Check arguments
+        await callAcceptBid(asset.proposalId.toString(), bidsId[asset.proposalId][index].toString())
+        setLoading(false)
+      } catch (error) {
+        setError(error.message)
+        console.error(error)
+      }
+    },
+    [bidsId, asset]
+  )
+
+  const handleRefuseBid = useCallback(
+    (index) => async () => {
+      try {
+        setLoading(true)
+        // TODO: Check arguments
+        await callRefuseBid(asset.proposalId.toString(), bidsId[asset.proposalId][index].toString())
+        setLoading(false)
+      } catch (error) {
+        setLoading(false)
+        setError(error.message)
+        console.error(error)
+      }
+    },
+    [bidsId, asset]
+  )
+
+  const handleDeleteBid = useCallback(
+    (index) => async () => {
+      try {
+        console.log(myBids)
+        // TODO: Check arguments
+        await callDeleteBid("BID ID")
+      } catch (error) {
+        setError(error.message)
+        console.error(error)
+      }
+    },
+    [bidsId, myBids]
+  )
+
+  const handleDeleteProposal = useCallback(
+    () => async () => {
+      console.log(proposalsId)
+      console.log(asset)
+      try {
+        console.log(proposalsId)
+        await callDeleteProposal()
+      } catch (error) {
+        console.error(error)
+      }
+    }, [proposalsId, asset])
 
   if (!window.ethereum) {
     return (
@@ -99,8 +182,8 @@ export default function Proposals() {
       </h1>
       <Spacer space={32} />
       <div className="container">
-        {loading && <div>Loading...</div>}
-        {nft && !loading && nft.length
+        {bidLoading && <div>Loading...</div>}
+        {nft && !bidLoading && nft.length
           ? nft.map((asset, index) => {
             return (
               <button key={index} onClick={handleCardClick(asset)}>
@@ -113,6 +196,29 @@ export default function Proposals() {
             )
           })
           : <div>No proposal found</div>}
+      </div>
+      <Spacer space={32} />
+      <h1 className="text-xl font-bold basis-full justify-center">
+        Your Bids
+      </h1>
+      <Spacer space={32} />
+      <div className="container">
+        {loading && <div>Loading...</div>}
+        {myBids && myBids.length > 0
+          ? myBids.map((myBid, index) => {
+            return (
+              <div  key={index} className="flex bg-sky-500/[.06]">
+                <CardInfo
+                  contractAddress={myBid.nftAddress}
+                  tokenId={myBid.tokenId.toString()}
+                />
+                <button className="bg-red-400 text-white font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" onClick={handleDeleteBid(index)}>
+                            Delete Bid
+                </button>
+              </div>
+            )
+          })
+          : <div>No bids found</div>}
       </div>
       {showModal ? (
         <>
@@ -136,7 +242,7 @@ export default function Proposals() {
                 </div>
                 {/*body*/}
                 <div className="relative p-8">
-                  {bids[asset.proposalId] !== undefined &&
+                  {bids[asset.proposalId] !== undefined ? 
                     bids[asset.proposalId].map((bid, index) => {
                       return (
                         <div key={index} className="flex flex-row gap-1 bg-grey-100">
@@ -152,15 +258,15 @@ export default function Proposals() {
                               tokenId={bid.tokenId.toString()}
                             />
                           </a>
-                          <button className="bg-red-400 text-white font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                          <button className="bg-red-400 text-white font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" onClick={handleRefuseBid(index)}>
                             Refuse Bid
                           </button>
-                          <button className="bg-lime-500 text-white font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                          <button className="bg-lime-500 text-white font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" onClick={handleAcceptBid(index)}>
                             Acccept Bid
                           </button>
                         </div>
                       )
-                    })}
+                    }) : <div>No bids found :(</div>}
                 </div>
                 {/*footer*/}
                 <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
@@ -170,6 +276,13 @@ export default function Proposals() {
                     onClick={() => setShowModal(false)}
                   >
                     Close
+                  </button>
+                  <button
+                    className="bg-red-600 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
+                    onClick={handleDeleteProposal}
+                  >
+                            Delete Proposal
                   </button>
                   {error ? (
                     <div>

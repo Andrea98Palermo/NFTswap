@@ -113,7 +113,6 @@ function Main() {
     })
     if(formData.nftaddress !== "" && formData.tokenid !== "") {
       const result = await callGetApproved(formData.nftaddress, formData.tokenid)
-      console.log(result)
       setApproved(result)
     }
   }
@@ -282,7 +281,7 @@ function Main() {
                           <>
                             {!loading ? (
                               <button
-                                className="bg-amber-500 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                className="bg-lime-500 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                 type="button"
                                 onClick={handleCardSubmit}
                               >
