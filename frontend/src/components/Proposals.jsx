@@ -11,7 +11,6 @@ import Card from "./Card"
 import { sanityclient } from "../utils/sanity"
 import CardInfo from "./CardInfo"
 
-
 export default function Proposals() {
   const [nft, setNft] = useState([])
   const [bids, setBids] = useState({})
@@ -34,7 +33,7 @@ export default function Proposals() {
           proposalIds.push(proposal.proposalId)
           const query = `*[_type == 'nfts' && _id == "${nftAddress}-${tokenId}"][0]`
           let collectionData = await sanityclient.fetch(query)
-          collectionData = {...collectionData, proposalId}
+          collectionData = { ...collectionData, proposalId }
           setNft((prevState) => [...prevState, collectionData])
         }
 
@@ -122,35 +121,45 @@ export default function Proposals() {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                  <h3 className="text-3xl font-semibold">Bids for {asset.title}</h3>
+                  <h3 className="text-3xl font-semibold">
+                    Bids for {asset.title}
+                  </h3>
                   <button
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                     onClick={() => setShowModal(false)}
                   >
                     <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                        ×
+                      ×
                     </span>
                   </button>
                 </div>
                 {/*body*/}
                 <div className="relative p-8">
-                  { bids[asset.proposalId] !== undefined && 
+                  {bids[asset.proposalId] !== undefined &&
                     bids[asset.proposalId].map((bid, index) => {
                       return (
-                        <div key={index} className="flex flex-row">
-                          <a href={`https://testnets.opensea.io/assets/${bid.nftAddress}/${bid.tokenId.toString()}`} target="_blank" rel="noopener noreferrer">
-                            <CardInfo contractAddress={bid.nftAddress} tokenId={bid.tokenId.toString()}/>
+                        <div key={index} className="flex flex-row gap-1">
+                          <a
+                            href={`https://testnets.opensea.io/assets/${
+                              bid.nftAddress
+                            }/${bid.tokenId.toString()}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <CardInfo
+                              contractAddress={bid.nftAddress}
+                              tokenId={bid.tokenId.toString()}
+                            />
                           </a>
-                          <button className="bg-amber-500 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
-                            Acccept Bid
-                          </button>
-                          <button className="bg-amber-500 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                          <button className="bg-red-400 text-white font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
                             Refuse Bid
+                          </button>
+                          <button className="bg-lime-500 text-white font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                            Acccept Bid
                           </button>
                         </div>
                       )
-                    })
-                  }
+                    })}
                 </div>
                 {/*footer*/}
                 <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
@@ -159,7 +168,7 @@ export default function Proposals() {
                     type="button"
                     onClick={() => setShowModal(false)}
                   >
-                      Close
+                    Close
                   </button>
                   {error ? (
                     <div>
