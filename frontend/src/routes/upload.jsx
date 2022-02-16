@@ -19,7 +19,7 @@ import { useWeb3React } from "@web3-react/core"
 import toast, { Toaster } from "react-hot-toast"
 
 const client = axios.create({
-  baseURL: "https://rinkeby-api.opensea.io/api/v1/",
+  baseURL: "https://rinkeby-api.opensea.io/api/v1/"
 })
 
 const Ok = 0

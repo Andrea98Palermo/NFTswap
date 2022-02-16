@@ -97,11 +97,11 @@ export const callGetAllProposals = async (index = 0) => {
   }
 }
 
-export const callGetProposals = async (index = 0) => {
+export const callGetMyProposals = async (index = 0) => {
   try {
     const { myContract, caller_address } = await initContractCall()
     let allProposals = []
-    for (let i = 0; i < index; i++) {
+    for (let i = 1; i < index + 1; i++) {
       let p = await myContract.proposals(i)
       allProposals.push(p)
     }
@@ -136,7 +136,7 @@ export const callGetApproved = async (
   try {
     const { ethereum } = window
     const provider = new ethers.providers.Web3Provider(ethereum)
-    const nftTokenId = BigNumber.from(tokenId)
+    const nftTokenId = BigNumber.from(tokenId.trim())
     const signer = provider.getSigner()
     const nftContract = new ethers.Contract(nftContractAddress, nftABI, signer)
     const result = await nftContract.getApproved(nftTokenId)
@@ -154,7 +154,7 @@ export const callBidsCount = async () => {
     const bidsCount = myContract.bidsCount()
     return bidsCount
   } catch (err) {
-    console.log(err)
+    console.error(err)
     throw err
   }
 }
@@ -171,7 +171,7 @@ export const callGetBidFromProposal = async (proposalId = 0, index = 0) => {
     }
     return bids
   } catch (err) {
-    console.log(err)
+    console.error(err)
     throw err
   }
 }
@@ -179,10 +179,10 @@ export const callGetBidFromProposal = async (proposalId = 0, index = 0) => {
 export const callGetBidsFromProposal = async (proposalId = 0) => {
   try {
     const { myContract } = await initContractCall()
-    let bids = await myContract.getBidsFromProposal(proposalId)
+    const bids = await myContract.getBidsFromProposal(proposalId)
     return bids
   } catch (err) {
-    console.log(err)
+    console.error(err)
     throw err
   }
 }
