@@ -8,7 +8,7 @@ CardInfo.propTypes = {
 
 function CardInfo({ contractAddress, tokenId, tokenType}) {
   return (
-    <div className="max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
+    <div className="bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
       <div className="p-5">
         <div>
           <p>Contract Address: {contractAddress}</p>
