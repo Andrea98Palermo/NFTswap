@@ -3,6 +3,10 @@ import sanityClient from "@sanity/client"
 
 const API_KEY = process.env.REACT_APP_SANITY_API_KEY || ""
 
+if (API_KEY === "") {
+  console.error("Sanity API key not found")
+}
+
 export const sanityclient = sanityClient({
   projectId: "rguw4ia4",
   dataset: "production",
