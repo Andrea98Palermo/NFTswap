@@ -2,7 +2,7 @@ import { ethers, BigNumber } from "ethers"
 import contract from "../contracts/contract-abi.json"
 import nftContract from "../contracts/erc721-abi.json"
 
-const CONTRACT_ADDRESS = "0x577648C2b4642130B399D8a3e1e8E32bF234d864"
+const CONTRACT_ADDRESS = "0x2a43930E70E2cb41Eb29622ED9a7401b8DB78F99"
 
 const contractAddress = CONTRACT_ADDRESS
 const contractABI = contract.abi
@@ -142,12 +142,10 @@ export const callGetApproved = async (
     const result = await nftContract.getApproved(nftTokenId)
     return result === CONTRACT_ADDRESS
   } catch (error) {
-    console.error(error)
-    throw error
+    return false
   }
 }
 
-// TODO: Test it
 export const callBidsCount = async () => {
   try {
     const { myContract } = await initContractCall()
@@ -197,3 +195,68 @@ export const callBids = async (bidId = 0) => {
     throw err
   }
 }
+
+export const callAcceptBid = async (proposalId = "", bidId = "") => {
+  try {
+    const { myContract } = await initContractCall()
+    const proposalIdNum = BigNumber.from(proposalId)
+    const bidIdNum = BigNumber.from(bidId)
+    let bid = await myContract.acceptBid(proposalIdNum, bidIdNum)
+    return bid
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export const callRefuseBid = async (proposalId = "", bidId = "") => {
+  try {
+    const { myContract } = await initContractCall()
+    const proposalIdNum = BigNumber.from(proposalId)
+    const bidIdNum = BigNumber.from(bidId)
+    let bid = await myContract.refuseBid(proposalIdNum, bidIdNum)
+    return bid
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export const callGetMyBids = async (index = 0) => {
+  try {
+    const { myContract, caller_address } = await initContractCall()
+    let allBids = []
+    for (let i = 1; i < index + 1; i++) {
+      let p = await myContract.bids(i)
+      allBids.push(p)
+    }
+    const result = allBids.filter((p) => p.bidder === caller_address)
+    return result
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const callDeleteBid = async (bidId = "") => {
+  try {
+    const { myContract } = await initContractCall()
+    const bidIdNum = BigNumber.from(bidId)
+    await myContract.deleteBid(bidIdNum)
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export const callDeleteProposal = async (proposalId = "") => {
+  try {
+    const { myContract } = await initContractCall()
+    const proposalIdNum = BigNumber.from(proposalId)
+    await myContract.deleteProposal(proposalIdNum)
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+

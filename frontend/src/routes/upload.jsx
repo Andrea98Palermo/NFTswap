@@ -131,6 +131,7 @@ export default function Upload() {
     } catch (error) {
       setLoading(false)
       setApproved(false)
+      setShowModal(false)
       notify(Error, "Error in NTF approval")
       setError(error.message)
     }
@@ -208,7 +209,7 @@ export default function Upload() {
         {nft && !nft.assets.length && <div>No NFTs found</div>}
         {nft && nft.assets.length
           ? nft.assets.map((asset, index) => {
-            if(asset.name !== null && asset.description !== null) {
+            if(asset.name !== null && asset.description !== null && asset.image_url !== null) {
               return (
                 <button key={index} onClick={handleCardClick(asset)}>
                   <Card
@@ -283,7 +284,7 @@ export default function Upload() {
                       <>
                         {!loading ? (
                           <button
-                            className="bg-amber-500 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            className="bg-lime-500 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
                             onClick={handleCardSubmit}
                           >
