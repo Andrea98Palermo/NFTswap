@@ -24,6 +24,7 @@ export default function Proposals() {
     if (active) {
       try {
         // Get proposals for the connected user
+        setNft([])
         const proposalsCount = parseInt(await callGetProposalsCount(), 16) - 1
         const proposals = await callGetMyProposals(proposalsCount)
         let proposalIds = []
@@ -136,10 +137,16 @@ export default function Proposals() {
                   { bids[asset.proposalId] !== undefined && 
                     bids[asset.proposalId].map((bid, index) => {
                       return (
-                        <div key={index}>
+                        <div key={index} className="flex flex-row">
                           <a href={`https://testnets.opensea.io/assets/${bid.nftAddress}/${bid.tokenId.toString()}`} target="_blank" rel="noopener noreferrer">
                             <CardInfo contractAddress={bid.nftAddress} tokenId={bid.tokenId.toString()}/>
                           </a>
+                          <button className="bg-amber-500 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                            Acccept Bid
+                          </button>
+                          <button className="bg-amber-500 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                            Refuse Bid
+                          </button>
                         </div>
                       )
                     })
