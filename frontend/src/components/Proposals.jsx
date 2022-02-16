@@ -15,6 +15,7 @@ export default function Proposals() {
   const [nft, setNft] = useState([])
   const [bids, setBids] = useState({})
   const [showModal, setShowModal] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [asset, setAsset] = useState(null)
   const [error, setError] = useState("")
   const { account, active } = useWeb3React()
@@ -55,6 +56,7 @@ export default function Proposals() {
           }
         }
         setBids(biddedNftsData)
+        setLoading(false)
       } catch (err) {
         setError(err.message)
         console.error(err)
@@ -97,9 +99,8 @@ export default function Proposals() {
       </h1>
       <Spacer space={32} />
       <div className="container">
-        {!nft && <div>Loading...</div>}
-        {nft && !nft.length && <div>No proposal found</div>}
-        {nft && nft.length
+        {loading && <div>Loading...</div>}
+        {nft && !loading && nft.length
           ? nft.map((asset, index) => {
             return (
               <button key={index} onClick={handleCardClick(asset)}>
@@ -111,7 +112,7 @@ export default function Proposals() {
               </button>
             )
           })
-          : null}
+          : <div>No proposal found</div>}
       </div>
       {showModal ? (
         <>
@@ -138,7 +139,7 @@ export default function Proposals() {
                   {bids[asset.proposalId] !== undefined &&
                     bids[asset.proposalId].map((bid, index) => {
                       return (
-                        <div key={index} className="flex flex-row gap-1">
+                        <div key={index} className="flex flex-row gap-1 bg-grey-100">
                           <a
                             href={`https://testnets.opensea.io/assets/${
                               bid.nftAddress
