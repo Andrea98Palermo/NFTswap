@@ -118,12 +118,6 @@ function Main() {
     }
   }
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault()
-    await callMakeBid(proposalId, formData.nftaddress, formData.tokenid)
-    dispatchFormData({ reset: true })
-  }
-
   const handleCardSubmit = async (event) => {
     event.preventDefault()
     try {
@@ -186,7 +180,6 @@ function Main() {
         {!loading ? (
           nft.length > 0 ? (
             nft.map((asset, index) => {
-              console.log(asset)
               return (
                 <button key={index} onClick={handleCardClick(asset)}>
                   <Card
@@ -236,7 +229,7 @@ function Main() {
                       tokenId={asset.tokenId}
                       tokenType={asset.ercType}
                     />
-                    <form onSubmit={handleFormSubmit} className="mx-auto">
+                    <form className="mx-auto">
                       <div>
                         <label>
                           <p>NFT Address to propose</p>
