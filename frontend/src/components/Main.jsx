@@ -217,17 +217,19 @@ function Main() {
                     </button>
                   </div>
                   {/*body*/}
-                  <div className="relative p-8">
+                  <div className="relative p-8 flex flex-col justify-center grid justify-items-center">
                     <Card
                       title={asset.title}
                       description={asset.description}
                       image={asset.imageUrl}
                     />
+                    <Spacer space={16}/>
                     <CardInfo
                       contractAddress={asset.contractAddress}
                       tokenId={asset.tokenId}
                       tokenType={asset.ercType}
                     />
+                    <Spacer space={16}/>
                     <form className="mx-auto">
                       <div>
                         <label>
