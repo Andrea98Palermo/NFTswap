@@ -19,6 +19,8 @@ import { sanityclient } from "../utils/sanity"
 import CardInfo from "./CardInfo"
 import toast, { Toaster } from "react-hot-toast"
 import ProcessingButton from "./ProcessingButton"
+//import { useBetween } from "use-between"
+
 
 const Ok = 0
 const Error = 1
@@ -51,6 +53,7 @@ export default function Proposals() {
   const [deleteProposalLoading, setDeleteProposalLoading] = useState(false)
   const [deleteBidLoading, setDeleteBidLoading] = useState(false)
   const [reload, setReload] = useState(false)
+  //const useSharedCounter = () => useBetween(reload)
 
   useEffect(async () => {
     if (active) {

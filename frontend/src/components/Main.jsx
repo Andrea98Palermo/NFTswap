@@ -175,7 +175,7 @@ function Main() {
     <div className="container mx-auto">
       <h2 className="text-xl font-bold basis-full justify-center">Home Page</h2>
       <Spacer space={32} />
-      <div className="flex flex-wrap justify-center items-start">
+      <div className="flex flex-wrap justify-center items-start gap-5 ">
         {!loading ? (
           nft.length > 0 ? (
             nft.map((asset, index) => {

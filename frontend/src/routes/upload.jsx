@@ -18,8 +18,10 @@ import { useState, useEffect, useReducer, useCallback } from "react"
 import { useWeb3React } from "@web3-react/core"
 import toast, { Toaster } from "react-hot-toast"
 
+
 const client = axios.create({
   baseURL: "https://testnets-api.opensea.io/api/v1/",
+
 })
 
 const Ok = 0
@@ -243,13 +245,14 @@ export default function Upload() {
                     </button>
                   </div>
                   {/*body*/}
-                  <div className="relative p-8">
+                  <div className="relative p-8 flex flex-col justify-center grid justify-items-center">
                     <Card
                       title={asset.name}
                       description={asset.description}
                       image={asset.image_url}
                       link={asset.permalink}
                     />
+                    <Spacer space={8} />
                     <CardInfo
                       contractAddress={asset.asset_contract.address}
                       tokenId={asset.token_id}
