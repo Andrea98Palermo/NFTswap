@@ -1,8 +1,14 @@
-function ProcessingButton(){
+import PropTypes from "prop-types"
+
+ProcessingButton.propTypes = {
+  color: PropTypes.string
+}
+
+function ProcessingButton({ color = "bg-amber-400" }) {
   return (
     <button
       type="button"
-      className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-amber-500 hover:bg-amber-400 transition ease-in-out duration-150 cursor-not-allowed"
+      className={`inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white ${color} transition ease-in-out duration-150 cursor-not-allowed`}
       disabled
     >
       <svg
@@ -25,10 +31,9 @@ function ProcessingButton(){
           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
         ></path>
       </svg>
-    Processing...
+      Processing...
     </button>
   )
 }
-
 
 export default ProcessingButton

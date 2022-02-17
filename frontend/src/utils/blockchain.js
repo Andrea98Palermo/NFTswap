@@ -202,7 +202,8 @@ export const callAcceptBid = async (proposalId = "", bidId = "") => {
     const proposalIdNum = BigNumber.from(proposalId)
     const bidIdNum = BigNumber.from(bidId)
     let bid = await myContract.acceptBid(proposalIdNum, bidIdNum)
-    return bid
+    const receipt = await bid.wait()
+    return receipt
   } catch (err) {
     console.log(err)
     throw err
@@ -215,7 +216,8 @@ export const callRefuseBid = async (proposalId = "", bidId = "") => {
     const proposalIdNum = BigNumber.from(proposalId)
     const bidIdNum = BigNumber.from(bidId)
     let bid = await myContract.refuseBid(proposalIdNum, bidIdNum)
-    return bid
+    const receipt = await bid.wait()
+    return receipt
   } catch (err) {
     console.log(err)
     throw err
@@ -242,7 +244,9 @@ export const callDeleteBid = async (bidId = "") => {
   try {
     const { myContract } = await initContractCall()
     const bidIdNum = BigNumber.from(bidId)
-    await myContract.deleteBid(bidIdNum)
+    const bid = await myContract.deleteBid(bidIdNum)
+    const receipt = await bid.wait()
+    return receipt
   } catch (err) {
     console.log(err)
     throw err
@@ -253,7 +257,9 @@ export const callDeleteProposal = async (proposalId = "") => {
   try {
     const { myContract } = await initContractCall()
     const proposalIdNum = BigNumber.from(proposalId)
-    await myContract.deleteProposal(proposalIdNum)
+    const prop = await myContract.deleteProposal(proposalIdNum)
+    const receipt = await prop.wait()
+    return receipt
   } catch (err) {
     console.log(err)
     throw err

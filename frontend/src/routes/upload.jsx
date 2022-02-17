@@ -19,7 +19,7 @@ import { useWeb3React } from "@web3-react/core"
 import toast, { Toaster } from "react-hot-toast"
 
 const client = axios.create({
-  baseURL: "https://rinkeby-api.opensea.io/api/v1/"
+  baseURL: "https://testnets-api.opensea.io/api/v1/",
 })
 
 const Ok = 0
@@ -66,7 +66,7 @@ export default function Upload() {
   useEffect(async () => {
     if (active) {
       try {
-        const response = await client.get("assets?owner=" + account)
+        const response = await client.get(`assets?owner=${account}`)
         setNft(response.data)
       } catch (error) {
         alert(error)
@@ -291,7 +291,7 @@ export default function Upload() {
                             Propose
                           </button>
                         ) : (
-                          <ProcessingButton />
+                          <ProcessingButton color="bg-lime-500" />
                         )}
                       </>
                     )}

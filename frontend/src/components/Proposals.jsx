@@ -17,6 +17,22 @@ import Spacer from "./Spacer"
 import Card from "./Card"
 import { sanityclient } from "../utils/sanity"
 import CardInfo from "./CardInfo"
+import toast, { Toaster } from "react-hot-toast"
+import ProcessingButton from "./ProcessingButton"
+
+const Ok = 0
+const Error = 1
+
+const notify = (status, message) => {
+  switch (status) {
+  case Ok:
+    toast.success(message)
+    break
+  case Error:
+    toast.error(message)
+    break
+  }
+}
 
 export default function Proposals() {
   const [nft, setNft] = useState([])
@@ -30,6 +46,11 @@ export default function Proposals() {
   const [error, setError] = useState("")
   const [proposalsId, setProposalsId] = useState([])
   const { account, active } = useWeb3React()
+  const [refuseLoading, setRefuseLoading] = useState(false)
+  const [acceptLoading, setAcceptLoading] = useState(false)
+  const [deleteProposalLoading, setDeleteProposalLoading] = useState(false)
+  const [deleteBidLoading, setDeleteBidLoading] = useState(false)
+  const [reload, setReload] = useState(false)
 
   useEffect(async () => {
     if (active) {
@@ -91,7 +112,7 @@ export default function Proposals() {
         console.error(err)
       }
     }
-  }, [account])
+  }, [account, reload])
 
   useEffect(async () => {
     setMyBids([])
@@ -113,13 +134,17 @@ export default function Proposals() {
   const handleAcceptBid = useCallback(
     (index) => async () => {
       try {
-        setLoading(true)
+        setAcceptLoading(true)
         await callAcceptBid(
           asset.proposalId.toString(),
           bidsId[asset.proposalId][index].toString()
         )
-        setLoading(false)
+        setAcceptLoading(false)
+        setShowModal(false)
+        notify(Ok, "NFT Swapped!")
+        setReload(!reload)
       } catch (error) {
+        setAcceptLoading(false)
         setError(error.message)
         console.error(error)
       }
@@ -130,14 +155,15 @@ export default function Proposals() {
   const handleRefuseBid = useCallback(
     (index) => async () => {
       try {
-        setLoading(true)
+        setRefuseLoading(true)
         await callRefuseBid(
           asset.proposalId.toString(),
           bidsId[asset.proposalId][index].toString()
         )
-        setLoading(false)
+        setRefuseLoading(false)
+        notify(Ok, "Bid refused")
       } catch (error) {
-        setLoading(false)
+        setRefuseLoading(false)
         setError(error.message)
         console.error(error)
       }
@@ -148,8 +174,13 @@ export default function Proposals() {
   const handleDeleteBid = useCallback(
     (index) => async () => {
       try {
+        setDeleteBidLoading(true)
         await callDeleteBid(myBids[index].bidId.toString())
+        setDeleteBidLoading(false)
+        notify(Ok, "Bid deleted successfully")
       } catch (error) {
+        notify(Error, "Error deleting bid")
+        setDeleteBidLoading(false)
         console.error(error)
       }
     },
@@ -159,9 +190,15 @@ export default function Proposals() {
   const handleDeleteProposal = useCallback(
     () => async () => {
       try {
+        setDeleteProposalLoading(true)
         await callDeleteProposal(asset.proposalId.toString())
+        setDeleteProposalLoading(false)
+        setShowModal(false)
+        notify(Ok, "Proposal deleted successfully")
       } catch (error) {
         setError(error.message)
+        notify(Error, "Error deleting proposal")
+        setDeleteProposalLoading(false)
         console.error(error)
       }
     },
@@ -195,49 +232,54 @@ export default function Proposals() {
       </h1>
       <Spacer space={32} />
       <div className="container">
-        {loading ? <div>Loading...</div> :
-          nft && !loading && nft.length ? (
-            nft.map((asset, index) => {
-              return (
-                <button key={index} onClick={handleCardClick(asset)}>
-                  <Card
-                    title={asset.title}
-                    description={asset.description}
-                    image={asset.imageUrl}
-                  />
-                </button>
-              )
-            })
-          ) : (
-            <div>No proposal found</div>
-          )}
+        {loading ? (
+          <div>Loading...</div>
+        ) : nft && !loading && nft.length ? (
+          nft.map((asset, index) => {
+            return (
+              <button key={index} onClick={handleCardClick(asset)}>
+                <Card
+                  title={asset.title}
+                  description={asset.description}
+                  image={asset.imageUrl}
+                />
+              </button>
+            )
+          })
+        ) : (
+          <div>No proposal found</div>
+        )}
       </div>
       <Spacer space={32} />
       <h1 className="text-xl font-bold basis-full justify-center">Your Bids</h1>
       <Spacer space={32} />
       <div className="container">
-        {bidLoading ? <div>Loading...</div> :
-          myBids && myBids.length > 0 ? (
-            myBids.map((myBid, index) => {
-              return (
-                <div key={index} className="flex bg-sky-500/[.06]">
-                  <CardInfo
-                    contractAddress={myBid.nftAddress}
-                    tokenId={myBid.tokenId.toString()}
-                  />
+        {bidLoading ? (
+          <div>Loading...</div>
+        ) : myBids && myBids.length > 0 ? (
+          myBids.map((myBid, index) => {
+            return (
+              <div key={index} className="flex bg-sky-500/[.06]">
+                <CardInfo
+                  contractAddress={myBid.nftAddress}
+                  tokenId={myBid.tokenId.toString()}
+                />
+                {!deleteBidLoading ?
                   <button
                     className="bg-red-400 text-white font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     onClick={handleDeleteBid(index)}
                   >
                   Delete Bid
-                  </button>
-                </div>
-              )
-            })
-          ) : (
-            <div>No bids found</div>
-          )}
+                  </button> : <ProcessingButton color="bg-red-400" />
+                }
+              </div>
+            )
+          })
+        ) : (
+          <div>No bids found</div>
+        )}
       </div>
+      <Toaster />
       {showModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -279,18 +321,26 @@ export default function Proposals() {
                               tokenId={bid.tokenId.toString()}
                             />
                           </a>
-                          <button
-                            className="bg-red-400 text-white font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            onClick={handleRefuseBid(index)}
-                          >
-                            Refuse Bid
-                          </button>
-                          <button
-                            className="bg-lime-500 text-white font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            onClick={handleAcceptBid(index)}
-                          >
-                            Acccept Bid
-                          </button>
+                          {!refuseLoading ? (
+                            <button
+                              className="bg-red-400 text-white font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              onClick={handleRefuseBid(index)}
+                            >
+                              Refuse Bid
+                            </button>
+                          ) : (
+                            <ProcessingButton color="bg-red-400" />
+                          )}
+                          {!acceptLoading ? (
+                            <button
+                              className="bg-lime-500 text-white font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              onClick={handleAcceptBid(index)}
+                            >
+                              Acccept Bid
+                            </button>
+                          ) : (
+                            <ProcessingButton color="bg-lime-500" />
+                          )}
                         </div>
                       )
                     })
@@ -307,13 +357,14 @@ export default function Proposals() {
                   >
                     Close
                   </button>
-                  <button
-                    className="bg-red-600 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button"
-                    onClick={handleDeleteProposal()}
-                  >
+                  {!deleteProposalLoading ?
+                    <button
+                      className="bg-red-600 text-white active:bg-emerald-600 font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      type="button"
+                      onClick={handleDeleteProposal()}
+                    >
                     Delete Proposal
-                  </button>
+                    </button> : <ProcessingButton color="bg-red-600" />}
                   {error ? (
                     <div>
                       <p>{error}</p>
